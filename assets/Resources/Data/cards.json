@@ -1,0 +1,110 @@
+{
+  "cards": [
+    {
+      "id": "yujian_shu",
+      "name": "御剑术",
+      "name_en": "Sword Flight",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 6 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 9 }
+      ],
+      "desc": "造成 6 点伤害",
+      "desc_up": "造成 9 点伤害",
+      "flavor": "御剑千里，取敌首级——青云门入门第一课。"
+    },
+    {
+      "id": "gangqi_huti",
+      "name": "罡气护体",
+      "name_en": "Gang Qi Guard",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 5 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 8 }
+      ],
+      "desc": "获得 5 点罡气",
+      "desc_up": "获得 8 点罡气",
+      "flavor": "罡气外放，万法不侵。"
+    },
+    {
+      "id": "pojia_jian",
+      "name": "破甲剑",
+      "name_en": "Armor Breaker",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 8 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 10 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 1 }
+      ],
+      "desc": "造成 8 点伤害，施加 1 层破绽",
+      "desc_up": "造成 10 点伤害，施加 1 层破绽",
+      "flavor": "专破护体罡气的一剑。"
+    },
+    {
+      "id": "zhuihun_ci",
+      "name": "追魂刺",
+      "name_en": "Soul Chaser",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        {
+          "type": "damage",
+          "value": 6,
+          "conditional": {
+            "when": "target_has_poison",
+            "value": 8
+          }
+        }
+      ],
+      "upgrade_effects": [
+        {
+          "type": "damage",
+          "value": 8,
+          "conditional": {
+            "when": "target_has_poison",
+            "value": 10
+          }
+        }
+      ],
+      "desc": "造成 6 点伤害；目标有毒煞则改为 8 点",
+      "desc_up": "造成 8 点伤害；目标有毒煞则改为 10 点",
+      "flavor": "煞气未散，正剑必中。"
+    },
+    {
+      "id": "wanjian_jue",
+      "name": "万剑诀",
+      "name_en": "Ten Thousand Swords",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "multi_hit", "times": 2, "value": 6 }
+      ],
+      "upgrade_effects": [
+        { "type": "multi_hit", "times": 2, "value": 8 }
+      ],
+      "desc": "造成 2 次 6 点伤害",
+      "desc_up": "造成 2 次 8 点伤害",
+      "flavor": "御剑千柄，剑气如雨。"
+    }
+  ]
+}

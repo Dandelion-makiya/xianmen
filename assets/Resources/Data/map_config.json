@@ -1,0 +1,20 @@
+{
+  "map_config": {
+    "total_nodes": 20,
+    "first_battle_node": 1,
+    "rest_node": 10,
+    "boss_node": 20,
+    "elite_windows": [
+      { "from": 6, "to": 8 },
+      { "from": 11, "to": 13 },
+      { "from": 16, "to": 18 }
+    ],
+    "event_count": 3,
+    "max_consecutive_battles": 3,
+    "rarity_by_node": [
+      { "from": 1, "to": 7, "rarities": ["basic"] },
+      { "from": 8, "to": 14, "rarities": ["basic", "advanced"] },
+      { "from": 15, "to": 20, "rarities": ["basic", "advanced", "rare"] }
+    ]
+  }
+}
