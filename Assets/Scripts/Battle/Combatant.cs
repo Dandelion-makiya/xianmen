@@ -43,6 +43,11 @@ namespace Xianmen
             _buffs[buff] = GetBuff(buff) + stacks;
         }
 
+        public void RemoveBuff(string buff)
+        {
+            _buffs.Remove(buff);
+        }
+
         public void TickTurnStart()
         {
             var poison = GetBuff("poison");

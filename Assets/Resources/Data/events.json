@@ -5,8 +5,14 @@
       "name": "山间灵泉",
       "text": "你在山间赶路，忽见一眼灵泉，泉水晶莹，灵气氤氲。",
       "options": [
-        { "text": "当场饮用", "effect": { "type": "heal", "value": 20 } },
-        { "text": "装满带走", "effect": { "type": "resource", "resource": "herb", "value": 5 } }
+        {
+          "text": "当场饮用",
+          "effect": { "type": "heal", "value": 20 }
+        },
+        {
+          "text": "装满带走",
+          "effect": { "type": "resource", "resource": "herb", "value": 5 }
+        }
       ]
     },
     {
@@ -19,7 +25,10 @@
           "cost": { "resource": "spirit_stone", "value": 10 },
           "effect": { "type": "reward_card", "rarity": "advanced" }
         },
-        { "text": "挥袖赶走", "effect": { "type": "resource", "resource": "spirit_stone", "value": 3 } }
+        {
+          "text": "挥袖赶走",
+          "effect": { "type": "resource", "resource": "spirit_stone", "value": 3 }
+        }
       ]
     },
     {
@@ -27,8 +36,14 @@
       "name": "古墓残卷",
       "text": "你发现一座上古修士的古墓，墓中石匣里放着一卷残破典籍。",
       "options": [
-        { "text": "就地参悟", "effect": { "type": "reward_relic" } },
-        { "text": "收好带走", "effect": { "type": "resource", "resource": "herb", "value": 8 } }
+        {
+          "text": "就地参悟",
+          "effect": { "type": "reward_relic" }
+        },
+        {
+          "text": "收好带走",
+          "effect": { "type": "resource", "resource": "herb", "value": 8 }
+        }
       ]
     }
   ]

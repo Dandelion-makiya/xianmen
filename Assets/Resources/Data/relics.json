@@ -8,6 +8,69 @@
       "flavor": "记录宗门收支的账册，精打细算方能长久。"
     },
     {
+      "id": "lingshi_kuangmai",
+      "name": "灵石矿脉",
+      "desc": "战斗胜利额外 +2 灵石",
+      "effect": { "type": "battle_reward", "resource": "spirit_stone", "value": 2 },
+      "flavor": "山中的灵石矿脉，源源不断产出灵石。"
+    },
+    {
+      "id": "lingyao_yuan",
+      "name": "灵药园",
+      "desc": "战斗胜利额外 +1 药材",
+      "effect": { "type": "battle_reward", "resource": "herb", "value": 1 },
+      "flavor": "种植灵药的药园，药材取之不竭。"
+    },
+    {
+      "id": "lianqi_ge",
+      "name": "炼器阁",
+      "desc": "坊市价格 -15%",
+      "effect": { "type": "market_discount", "value": 0.15 },
+      "flavor": "宗门炼器之所，与坊市交好可得折扣。"
+    },
+    {
+      "id": "shoushan_dazhen",
+      "name": "守山大阵",
+      "desc": "战斗开始获得 3 点罡气",
+      "effect": { "type": "battle_start_block", "value": 3 },
+      "flavor": "护山阵法，庇护入战弟子。"
+    },
+    {
+      "id": "fangshi_ling",
+      "name": "坊市令",
+      "desc": "坊市货架 +1 张",
+      "effect": { "type": "market_extra_card", "value": 1 },
+      "flavor": "坊市颁发的令牌，货架多一格。"
+    },
+    {
+      "id": "huichun_cao",
+      "name": "回春草",
+      "desc": "战斗胜利回复 3 点生命",
+      "effect": { "type": "battle_reward_heal", "value": 3 },
+      "flavor": "疗伤圣草，战斗后自然回血。"
+    },
+    {
+      "id": "xianghuo_qian",
+      "name": "香火钱",
+      "desc": "奇遇奖励 +1",
+      "effect": { "type": "event_reward_bonus", "value": 1 },
+      "flavor": "宗门香火鼎盛，奇遇皆有额外收获。"
+    },
+    {
+      "id": "cangbao_tu",
+      "name": "藏宝图",
+      "desc": "精英战额外掉落",
+      "effect": { "type": "elite_drop_bonus", "value": 1 },
+      "flavor": "记录精英藏宝地点的古图。"
+    },
+    {
+      "id": "lingshi_che",
+      "name": "灵石车",
+      "desc": "战斗胜利额外 +4 灵石",
+      "effect": { "type": "battle_reward", "resource": "spirit_stone", "value": 4 },
+      "flavor": "满载灵石的车队，每战必归。"
+    },
+    {
       "id": "lingquan",
       "name": "灵泉",
       "desc": "打坐回复提升至最大 HP 的 50%",
@@ -15,11 +78,32 @@
       "flavor": "山间灵泉，打坐效果倍增。"
     },
     {
+      "id": "yanwu_chang",
+      "name": "演武场",
+      "desc": "战斗开始获得 1 点灵力",
+      "effect": { "type": "battle_start_energy", "value": 1 },
+      "flavor": "弟子演武之地，士气高昂。"
+    },
+    {
+      "id": "juling_zhen",
+      "name": "聚灵阵",
+      "desc": "战斗胜利额外 +2 药材",
+      "effect": { "type": "battle_reward", "resource": "herb", "value": 2 },
+      "flavor": "汇聚灵气的阵法，药材增产。"
+    },
+    {
       "id": "tianji_pan",
       "name": "天机盘",
       "desc": "每回合第一张攻击卡伤害总额 +2",
       "effect": { "type": "first_attack_bonus", "value": 2 },
-      "flavor": "推演天机，首击必中。"
+      "flavor": "推演天机，首击必强。"
+    },
+    {
+      "id": "zongmen_jinku",
+      "name": "宗门金库",
+      "desc": "战斗胜利额外 +6 灵石",
+      "effect": { "type": "battle_reward", "resource": "spirit_stone", "value": 6 },
+      "flavor": "历代积累的宗门财富。"
     }
   ]
 }

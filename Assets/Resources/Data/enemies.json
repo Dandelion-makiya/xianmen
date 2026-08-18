@@ -14,6 +14,188 @@
       "lore": "被魔气浸染的沼泽生灵，是最弱的魔物，常被用来试炼新弟子。"
     },
     {
+      "id": "yao_lang",
+      "name": "妖狼",
+      "type": "normal",
+      "hp": 30,
+      "intents": [
+        { "action": "attack", "value": 7 },
+        { "action": "attack", "value": 7 },
+        { "action": "heavy_attack", "value": 10 }
+      ],
+      "mechanic": "稳定输出",
+      "lore": "山林狼群受魔气侵蚀，变得狂暴嗜血。"
+    },
+    {
+      "id": "shanzei_lou_luo",
+      "name": "山贼喽啰",
+      "type": "normal",
+      "hp": 50,
+      "intents": [
+        { "action": "attack", "value": 8 },
+        { "action": "block", "value": 5 },
+        { "action": "heavy_attack", "value": 12 }
+      ],
+      "mechanic": "",
+      "lore": "乱世中落草为寇的凡人，投靠魔尊以求苟活。"
+    },
+    {
+      "id": "shanzei_tou_mu",
+      "name": "山贼头目",
+      "type": "normal",
+      "hp": 65,
+      "intents": [
+        { "action": "attack", "value": 9 },
+        { "action": "block", "value": 8 },
+        { "action": "heavy_attack", "value": 14 }
+      ],
+      "mechanic": "数值升级版",
+      "lore": "山贼中的头领，修炼了粗浅魔功。"
+    },
+    {
+      "id": "shi_kui",
+      "name": "尸傀",
+      "type": "normal",
+      "hp": 70,
+      "intents": [
+        { "action": "attack", "value": 10 },
+        { "action": "attack", "value": 10 },
+        { "action": "heavy_attack", "value": 16 }
+      ],
+      "mechanic": "每次攻击后 +1 剑意（待实现）",
+      "lore": "被魔修炼制的尸体傀儡，不知痛楚。"
+    },
+    {
+      "id": "du_zhu_yao",
+      "name": "毒蛛妖",
+      "type": "normal",
+      "hp": 55,
+      "intents": [
+        { "action": "attack", "value": 6, "action2": "debuff", "buff2": "poison", "stacks2": 2 },
+        { "action": "attack", "value": 6, "action2": "debuff", "buff2": "poison", "stacks2": 2 },
+        { "action": "block", "value": 6 }
+      ],
+      "mechanic": "教毒煞机制",
+      "lore": "魔气催生的毒蛛，吐丝带煞。"
+    },
+    {
+      "id": "hei_xiong_jing",
+      "name": "黑熊精",
+      "type": "normal",
+      "hp": 85,
+      "intents": [
+        { "action": "block", "value": 10 },
+        { "action": "attack", "value": 12 },
+        { "action": "heavy_attack", "value": 18 }
+      ],
+      "mechanic": "血厚",
+      "lore": "山中黑熊成精，力大无穷。"
+    },
+    {
+      "id": "shi_kui_jiang_jun",
+      "name": "尸傀将军",
+      "type": "normal",
+      "hp": 130,
+      "intents": [
+        { "action": "attack", "value": 12, "action2": "debuff", "buff2": "vulnerable", "stacks2": 1 },
+        { "action": "attack", "value": 12, "action2": "debuff", "buff2": "vulnerable", "stacks2": 1 },
+        { "action": "heavy_attack", "value": 20 }
+      ],
+      "mechanic": "越打越痛",
+      "lore": "生前是将领的尸傀，尚存一丝战斗本能。"
+    },
+    {
+      "id": "huo_sha_mo",
+      "name": "火煞魔",
+      "type": "normal",
+      "hp": 140,
+      "intents": [
+        { "action": "attack", "value": 15 },
+        { "action": "heavy_attack", "value": 24 },
+        { "action": "buff", "buff": "strength", "stacks": 2 }
+      ],
+      "mechanic": "成长型",
+      "lore": "由火系煞气凝聚而成的魔物。"
+    },
+    {
+      "id": "shuang_shou_jiao",
+      "name": "双首蛟",
+      "type": "normal",
+      "hp": 160,
+      "intents": [
+        { "action": "multi_attack", "times": 2, "value": 10 },
+        { "action": "multi_attack", "times": 2, "value": 10 },
+        { "action": "heavy_attack", "value": 26 }
+      ],
+      "mechanic": "二连击",
+      "lore": "即将化龙的双首蛟，被魔气引入歧途。"
+    },
+    {
+      "id": "shu_yao",
+      "name": "树妖",
+      "type": "normal",
+      "hp": 90,
+      "intents": [
+        { "action": "attack", "value": 8, "action2": "debuff", "buff2": "poison", "stacks2": 1 },
+        { "action": "block", "value": 8 },
+        { "action": "heavy_attack", "value": 14 }
+      ],
+      "mechanic": "",
+      "lore": "古树受魔气污染，化为食人树妖。"
+    },
+    {
+      "id": "shui_gui",
+      "name": "水鬼",
+      "type": "normal",
+      "hp": 75,
+      "intents": [
+        { "action": "attack", "value": 9 },
+        { "action": "attack", "value": 9 },
+        { "action": "block", "value": 7 }
+      ],
+      "mechanic": "",
+      "lore": "溺水怨魂所化，盘踞江河。"
+    },
+    {
+      "id": "du_yan_shan_yao",
+      "name": "独眼山妖",
+      "type": "elite",
+      "hp": 110,
+      "intents": [
+        { "action": "attack", "value": 14 },
+        { "action": "block", "value": 12 },
+        { "action": "heavy_attack", "value": 22 }
+      ],
+      "mechanic": "精英掉落",
+      "lore": "独眼巨妖，魔尊麾下精英，力大无穷。"
+    },
+    {
+      "id": "shi_xiang_kui_lei",
+      "name": "石像傀儡",
+      "type": "elite",
+      "hp": 100,
+      "intents": [
+        { "action": "block", "value": 14 },
+        { "action": "attack", "value": 10 },
+        { "action": "attack", "value": 10 }
+      ],
+      "mechanic": "高防",
+      "lore": "上古石像被魔尊点化，防御惊人。"
+    },
+    {
+      "id": "ying_mo",
+      "name": "影魔",
+      "type": "elite",
+      "hp": 90,
+      "intents": [
+        { "action": "attack", "value": 16 },
+        { "action": "attack", "value": 16 },
+        { "action": "block", "value": 6 }
+      ],
+      "mechanic": "高伤脆皮",
+      "lore": "潜伏于阴影中的魔物，专事暗杀。"
+    },
+    {
       "id": "mo_zun",
       "name": "魔尊",
       "type": "boss",

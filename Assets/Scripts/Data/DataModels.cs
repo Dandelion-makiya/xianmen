@@ -59,6 +59,11 @@ namespace Xianmen
         public int times;
         public string buff;
         public int stacks;
+        public string action2;
+        public int value2;
+        public int times2;
+        public string buff2;
+        public int stacks2;
     }
 
     [Serializable]

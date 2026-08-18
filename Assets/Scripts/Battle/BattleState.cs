@@ -107,34 +107,10 @@ namespace Xianmen
             var intent = Enemy.CurrentIntent;
             if (intent == null) return;
 
-            switch (intent.action)
+            ExecuteIntent(intent.action, intent.value, intent.times, intent.buff, intent.stacks);
+            if (!string.IsNullOrEmpty(intent.action2))
             {
-                case "attack":
-                case "heavy_attack":
-                    DealDamage(Enemy, Player, intent.value);
-                    break;
-                case "multi_attack":
-                    var times = Mathf.Max(1, intent.times);
-                    for (var i = 0; i < times; i++)
-                    {
-                        DealDamage(Enemy, Player, intent.value);
-                    }
-                    break;
-                case "block":
-                    Enemy.Block += intent.value;
-                    break;
-                case "buff":
-                    Enemy.AddBuff(
-                        string.IsNullOrEmpty(intent.buff) ? "strength" : intent.buff,
-                        intent.stacks > 0 ? intent.stacks : 1
-                    );
-                    break;
-                case "debuff":
-                    Player.AddBuff(
-                        string.IsNullOrEmpty(intent.buff) ? "weak" : intent.buff,
-                        intent.stacks > 0 ? intent.stacks : 1
-                    );
-                    break;
+                ExecuteIntent(intent.action2, intent.value2, intent.times2, intent.buff2, intent.stacks2);
             }
 
             Enemy.IntentIndex++;
@@ -142,16 +118,46 @@ namespace Xianmen
             CheckBattleEnd();
         }
 
+        private void ExecuteIntent(string action, int value, int times, string buff, int stacks)
+        {
+            switch (action)
+            {
+                case "attack":
+                case "heavy_attack":
+                    DealDamage(Enemy, Player, value);
+                    break;
+                case "multi_attack":
+                    var hitTimes = Mathf.Max(1, times);
+                    for (var i = 0; i < hitTimes; i++)
+                    {
+                        DealDamage(Enemy, Player, value);
+                    }
+                    break;
+                case "block":
+                    Enemy.Block += value;
+                    break;
+                case "buff":
+                    Enemy.AddBuff(
+                        string.IsNullOrEmpty(buff) ? "strength" : buff,
+                        stacks > 0 ? stacks : 1
+                    );
+                    break;
+                case "debuff":
+                    Player.AddBuff(
+                        string.IsNullOrEmpty(buff) ? "weak" : buff,
+                        stacks > 0 ? stacks : 1
+                    );
+                    break;
+            }
+        }
+
         private void ExecuteCardEffects(List<CardEffect> effects, string targetType, int damageBonus, bool attackPlayedBefore)
         {
             if (effects == null) return;
             foreach (var effect in effects)
             {
-                var value = effect.value;
-                if (effect.conditional != null && IsConditionMet(effect.conditional.when, attackPlayedBefore))
-                {
-                    value = effect.conditional.value;
-                }
+                var conditionalMet = effect.conditional != null && IsConditionMet(effect.conditional.when, attackPlayedBefore);
+                var value = conditionalMet ? effect.conditional.value : effect.value;
 
                 switch (effect.type)
                 {
@@ -182,7 +188,13 @@ namespace Xianmen
                         break;
                     case "apply_buff":
                         var target = targetType == "self" || targetType == "player" ? Player : Enemy;
-                        target.AddBuff(effect.buff, effect.stacks);
+                        var stacks = conditionalMet && effect.value != 0 ? value : effect.stacks;
+                        target.AddBuff(effect.buff, stacks);
+                        break;
+                    case "cleanse":
+                        Player.RemoveBuff("poison");
+                        Player.RemoveBuff("weak");
+                        Player.RemoveBuff("vulnerable");
                         break;
                 }
             }

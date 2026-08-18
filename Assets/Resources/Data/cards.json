@@ -19,22 +19,62 @@
       "flavor": "御剑千里，取敌首级——青云门入门第一课。"
     },
     {
-      "id": "gangqi_huti",
-      "name": "罡气护体",
-      "name_en": "Gang Qi Guard",
+      "id": "lianhuan_jian",
+      "name": "连环剑",
+      "name_en": "Chain Sword",
       "rarity": "basic",
       "cost": 1,
-      "type": "defense",
-      "target": "self",
+      "type": "attack",
+      "target": "enemy",
       "effects": [
-        { "type": "block", "value": 5 }
+        { "type": "multi_hit", "times": 2, "value": 3 }
       ],
       "upgrade_effects": [
-        { "type": "block", "value": 8 }
+        { "type": "multi_hit", "times": 2, "value": 4 }
       ],
-      "desc": "获得 5 点罡气",
-      "desc_up": "获得 8 点罡气",
-      "flavor": "罡气外放，万法不侵。"
+      "desc": "造成 2 次 3 点伤害",
+      "desc_up": "造成 2 次 4 点伤害",
+      "flavor": "一剑既出，后招无穷。"
+    },
+    {
+      "id": "tuci",
+      "name": "突刺",
+      "name_en": "Lunge",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 4 },
+        { "type": "draw", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 6 },
+        { "type": "draw", "value": 1 }
+      ],
+      "desc": "造成 4 点伤害，抽 1 张牌",
+      "desc_up": "造成 6 点伤害，抽 1 张牌",
+      "flavor": "快、准、狠，剑修的生存之道。"
+    },
+    {
+      "id": "zhanfeng",
+      "name": "斩风",
+      "name_en": "Wind Slash",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 9 },
+        { "type": "discard", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 12 },
+        { "type": "discard", "value": 1 }
+      ],
+      "desc": "造成 9 点伤害，弃 1 张手牌",
+      "desc_up": "造成 12 点伤害，弃 1 张手牌",
+      "flavor": "剑起之处，连风也退避三舍。"
     },
     {
       "id": "pojia_jian",
@@ -55,6 +95,102 @@
       "desc": "造成 8 点伤害，施加 1 层破绽",
       "desc_up": "造成 10 点伤害，施加 1 层破绽",
       "flavor": "专破护体罡气的一剑。"
+    },
+    {
+      "id": "dusha_zhang",
+      "name": "毒煞掌",
+      "name_en": "Poison Palm",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 4 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 6 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 3 }
+      ],
+      "desc": "造成 4 点伤害，施加 2 层毒煞",
+      "desc_up": "造成 6 点伤害，施加 3 层毒煞",
+      "flavor": "将煞气凝于掌心，拍入敌身。"
+    },
+    {
+      "id": "jianqi",
+      "name": "剑气",
+      "name_en": "Sword Qi",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 3 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 4 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "desc": "造成 3 点伤害，施加 1 层气滞",
+      "desc_up": "造成 4 点伤害，施加 1 层气滞",
+      "flavor": "无形剑气，伤敌于无形。"
+    },
+    {
+      "id": "pishan_jian",
+      "name": "劈山剑",
+      "name_en": "Mountain Splitter",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 10 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 14 }
+      ],
+      "desc": "造成 10 点伤害",
+      "desc_up": "造成 14 点伤害",
+      "flavor": "一剑劈山，刚猛无匹。"
+    },
+    {
+      "id": "zhendi_quan",
+      "name": "震地拳",
+      "name_en": "Earthshaker Fist",
+      "rarity": "basic",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 16 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 20 }
+      ],
+      "desc": "造成 16 点伤害",
+      "desc_up": "造成 20 点伤害",
+      "flavor": "拳出震地，势不可挡。"
+    },
+    {
+      "id": "lieyan_zhang",
+      "name": "烈焰掌",
+      "name_en": "Blazing Palm",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 7 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 9 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 3 }
+      ],
+      "desc": "造成 7 点伤害，施加 2 层毒煞",
+      "desc_up": "造成 9 点伤害，施加 3 层毒煞",
+      "flavor": "掌心烈焰，焚尽来敌。"
     },
     {
       "id": "zhuihun_ci",
@@ -86,7 +222,372 @@
       ],
       "desc": "造成 6 点伤害；目标有毒煞则改为 8 点",
       "desc_up": "造成 8 点伤害；目标有毒煞则改为 10 点",
-      "flavor": "煞气未散，正剑必中。"
+      "flavor": "煞气未散，此剑必中。"
+    },
+    {
+      "id": "hengsao",
+      "name": "横扫",
+      "name_en": "Sweeping Strike",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 8 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 11 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "desc": "造成 8 点伤害，施加 1 层气滞",
+      "desc_up": "造成 11 点伤害，施加 1 层气滞",
+      "flavor": "一力降十会。"
+    },
+    {
+      "id": "suigu_ji",
+      "name": "碎骨击",
+      "name_en": "Bone Crusher",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 12 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 15 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 1 }
+      ],
+      "desc": "造成 12 点伤害，施加 1 层破绽",
+      "desc_up": "造成 15 点伤害，施加 1 层破绽",
+      "flavor": "专寻破绽，一击碎骨。"
+    },
+    {
+      "id": "yufeng_jian",
+      "name": "御风剑",
+      "name_en": "Windborne Sword",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 5 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 7 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 1 }
+      ],
+      "desc": "造成 5 点伤害，获得 1 层身法",
+      "desc_up": "造成 7 点伤害，获得 1 层身法",
+      "flavor": "借风之势，剑随身走。"
+    },
+    {
+      "id": "gangqi_huti",
+      "name": "罡气护体",
+      "name_en": "Gang Qi Guard",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 5 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 8 }
+      ],
+      "desc": "获得 5 点罡气",
+      "desc_up": "获得 8 点罡气",
+      "flavor": "罡气外放，万法不侵。"
+    },
+    {
+      "id": "tiebushan",
+      "name": "铁布衫",
+      "name_en": "Iron Shirt",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 12 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 16 }
+      ],
+      "desc": "获得 12 点罡气",
+      "desc_up": "获得 16 点罡气",
+      "flavor": "外门弟子必修的硬功。"
+    },
+    {
+      "id": "panshi_gong",
+      "name": "磐石功",
+      "name_en": "Bedrock Art",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 9 },
+        { "type": "draw", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 13 },
+        { "type": "draw", "value": 1 }
+      ],
+      "desc": "获得 9 点罡气，抽 1 张牌",
+      "desc_up": "获得 13 点罡气，抽 1 张牌",
+      "flavor": "身如磐石，岿然不动。"
+    },
+    {
+      "id": "jinzhong_zhao",
+      "name": "金钟罩",
+      "name_en": "Golden Bell",
+      "rarity": "basic",
+      "cost": 3,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 15 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 20 }
+      ],
+      "desc": "获得 15 点罡气",
+      "desc_up": "获得 20 点罡气",
+      "flavor": "钟鸣之形，护体金身。"
+    },
+    {
+      "id": "xieli",
+      "name": "卸力",
+      "name_en": "Redirect Force",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "defense",
+      "target": "enemy",
+      "effects": [
+        { "type": "block", "value": 4 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 6 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "desc": "获得 4 点罡气，施加 1 层气滞",
+      "desc_up": "获得 6 点罡气，施加 1 层气滞",
+      "flavor": "四两拨千斤。"
+    },
+    {
+      "id": "huxin_jing",
+      "name": "护心镜",
+      "name_en": "Heart Guard Mirror",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 8 },
+        { "type": "apply_buff", "buff": "thorns", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 11 },
+        { "type": "apply_buff", "buff": "thorns", "stacks": 2 }
+      ],
+      "desc": "获得 8 点罡气，获得 2 层反噬",
+      "desc_up": "获得 11 点罡气，获得 2 层反噬",
+      "flavor": "镜中藏气，护住心脉。"
+    },
+    {
+      "id": "guixi_gong",
+      "name": "龟息功",
+      "name_en": "Tortoise Breath",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 6 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 9 }
+      ],
+      "desc": "获得 6 点罡气",
+      "desc_up": "获得 9 点罡气",
+      "flavor": "气沉丹田，固若金汤。"
+    },
+    {
+      "id": "tiangang_zhao",
+      "name": "天罡罩",
+      "name_en": "Heavenly Shield",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 10 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 14 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 1 }
+      ],
+      "desc": "获得 10 点罡气，获得 1 层身法",
+      "desc_up": "获得 14 点罡气，获得 1 层身法",
+      "flavor": "借天罡之力，护住周身。"
+    },
+    {
+      "id": "dangjian_jue",
+      "name": "挡剑诀",
+      "name_en": "Sword Block",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 5 },
+        { "type": "apply_buff", "buff": "thorns", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 7 },
+        { "type": "apply_buff", "buff": "thorns", "stacks": 1 }
+      ],
+      "desc": "获得 5 点罡气，获得 1 层反噬",
+      "desc_up": "获得 7 点罡气，获得 1 层反噬",
+      "flavor": "见招拆招，以巧化力。"
+    },
+    {
+      "id": "tuna_shu",
+      "name": "吐纳术",
+      "name_en": "Breathing Technique",
+      "rarity": "basic",
+      "cost": 0,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "draw", "value": 1 },
+        { "type": "energy", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "draw", "value": 2 },
+        { "type": "energy", "value": 1 }
+      ],
+      "desc": "抽 1 张牌，获得 1 点灵力",
+      "desc_up": "抽 2 张牌，获得 1 点灵力",
+      "flavor": "一呼一吸，灵力自生。"
+    },
+    {
+      "id": "ningshen",
+      "name": "凝神",
+      "name_en": "Focus Mind",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "energy", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "energy", "value": 1 },
+        { "type": "draw", "value": 1 }
+      ],
+      "desc": "获得 1 点灵力",
+      "desc_up": "获得 1 点灵力，抽 1 张牌",
+      "flavor": "凝神静气，灵台清明。"
+    },
+    {
+      "id": "juqi",
+      "name": "聚气",
+      "name_en": "Gather Qi",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "energy", "value": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "energy", "value": 3 }
+      ],
+      "desc": "获得 2 点灵力",
+      "desc_up": "获得 3 点灵力",
+      "flavor": "聚天地灵气于丹田。"
+    },
+    {
+      "id": "jingxin_jue",
+      "name": "静心诀",
+      "name_en": "Calm Heart",
+      "rarity": "basic",
+      "cost": 0,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "draw", "value": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "draw", "value": 3 }
+      ],
+      "desc": "抽 2 张牌",
+      "desc_up": "抽 3 张牌",
+      "flavor": "心静则万法自明。"
+    },
+    {
+      "id": "jixing_bu",
+      "name": "疾行步",
+      "name_en": "Swift Steps",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "draw", "value": 2 },
+        { "type": "discard", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "draw", "value": 3 },
+        { "type": "discard", "value": 1 }
+      ],
+      "desc": "抽 2 张牌，弃 1 张手牌",
+      "desc_up": "抽 3 张牌，弃 1 张手牌",
+      "flavor": "身法如电，来去无踪。"
+    },
+    {
+      "id": "liaoshang_shu",
+      "name": "疗伤术",
+      "name_en": "Healing Art",
+      "rarity": "basic",
+      "cost": 2,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "heal", "value": 8 }
+      ],
+      "upgrade_effects": [
+        { "type": "heal", "value": 12 }
+      ],
+      "desc": "回复 8 点生命",
+      "desc_up": "回复 12 点生命",
+      "flavor": "以灵力温养伤势。"
+    },
+    {
+      "id": "yinqi_ru_ti",
+      "name": "引气入体",
+      "name_en": "Qi Intake",
+      "rarity": "basic",
+      "cost": 1,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "energy", "value": 1 },
+        { "type": "draw", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "energy", "value": 2 },
+        { "type": "draw", "value": 1 }
+      ],
+      "desc": "获得 1 点灵力，抽 1 张牌",
+      "desc_up": "获得 2 点灵力，抽 1 张牌",
+      "flavor": "引气入体，周天运转。"
     },
     {
       "id": "wanjian_jue",
@@ -105,6 +606,598 @@
       "desc": "造成 2 次 6 点伤害",
       "desc_up": "造成 2 次 8 点伤害",
       "flavor": "御剑千柄，剑气如雨。"
+    },
+    {
+      "id": "leiting_jian",
+      "name": "雷霆剑",
+      "name_en": "Thunder Sword",
+      "rarity": "advanced",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 18 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 22 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 1 }
+      ],
+      "desc": "造成 18 点伤害，获得 1 层剑意",
+      "desc_up": "造成 22 点伤害，获得 1 层剑意",
+      "flavor": "剑携雷霆，天威临世。"
+    },
+    {
+      "id": "youming_guizhao",
+      "name": "幽冥鬼爪",
+      "name_en": "Nether Claw",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 10 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 13 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 3 }
+      ],
+      "desc": "造成 10 点伤害，施加 2 层毒煞",
+      "desc_up": "造成 13 点伤害，施加 3 层毒煞",
+      "flavor": "以魔气克魔，以毒攻毒。"
+    },
+    {
+      "id": "xuesha_zhan",
+      "name": "血煞斩",
+      "name_en": "Blood Fiend Slash",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 9 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 12 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 2 }
+      ],
+      "desc": "造成 9 点伤害，施加 2 层气滞",
+      "desc_up": "造成 12 点伤害，施加 2 层气滞",
+      "flavor": "血煞之气，斩敌生机。"
+    },
+    {
+      "id": "pojun",
+      "name": "破军",
+      "name_en": "Army Breaker",
+      "rarity": "advanced",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 20 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 25 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 1 }
+      ],
+      "desc": "造成 20 点伤害，施加 1 层破绽",
+      "desc_up": "造成 25 点伤害，施加 1 层破绽",
+      "flavor": "一剑破军，挡者披靡。"
+    },
+    {
+      "id": "yulei_shu",
+      "name": "御雷术",
+      "name_en": "Thunder Control",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 8 },
+        { "type": "draw", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 11 },
+        { "type": "draw", "value": 1 }
+      ],
+      "desc": "造成 8 点伤害，抽 1 张牌",
+      "desc_up": "造成 11 点伤害，抽 1 张牌",
+      "flavor": "引九天神雷，落于掌中。"
+    },
+    {
+      "id": "fentian_zhang",
+      "name": "焚天掌",
+      "name_en": "Sky Burning Palm",
+      "rarity": "advanced",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 14 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 18 },
+        { "type": "apply_buff", "buff": "poison", "stacks": 3 }
+      ],
+      "desc": "造成 14 点伤害，施加 2 层毒煞",
+      "desc_up": "造成 18 点伤害，施加 3 层毒煞",
+      "flavor": "掌出焚天，万物俱灭。"
+    },
+    {
+      "id": "jianxin_tongming",
+      "name": "剑心通明",
+      "name_en": "Sword Heart",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        {
+          "type": "damage",
+          "value": 12,
+          "conditional": {
+            "when": "played_attack_this_turn",
+            "value": 14
+          }
+        }
+      ],
+      "upgrade_effects": [
+        {
+          "type": "damage",
+          "value": 16,
+          "conditional": {
+            "when": "played_attack_this_turn",
+            "value": 18
+          }
+        }
+      ],
+      "desc": "造成 12 点伤害；本回合出过攻击卡则改为 14 点",
+      "desc_up": "造成 16 点伤害；本回合出过攻击卡则改为 18 点",
+      "flavor": "剑心澄澈，越战越强。"
+    },
+    {
+      "id": "yushou_jue",
+      "name": "御兽诀",
+      "name_en": "Beast Taming Art",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 6 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 8 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 2 }
+      ],
+      "desc": "造成 6 点伤害，获得 2 层剑意",
+      "desc_up": "造成 8 点伤害，获得 2 层剑意",
+      "flavor": "与灵兽心意相通，借力而战。"
+    },
+    {
+      "id": "tianlei_zhengfa",
+      "name": "天雷正法",
+      "name_en": "Heavenly Thunder",
+      "rarity": "advanced",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 24 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 30 }
+      ],
+      "desc": "造成 24 点伤害",
+      "desc_up": "造成 30 点伤害",
+      "flavor": "正道天雷，诛邪灭魔。"
+    },
+    {
+      "id": "taiji_huti",
+      "name": "太极护体",
+      "name_en": "Taiji Guard",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "defense",
+      "target": "enemy",
+      "effects": [
+        { "type": "block", "value": 10 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 14 },
+        { "type": "apply_buff", "buff": "weak", "stacks": 1 }
+      ],
+      "desc": "获得 10 点罡气，施加 1 层气滞",
+      "desc_up": "获得 14 点罡气，施加 1 层气滞",
+      "flavor": "阴阳相生，以柔克刚。"
+    },
+    {
+      "id": "jingang_buhuai",
+      "name": "金刚不坏",
+      "name_en": "Indestructible Vajra",
+      "rarity": "advanced",
+      "cost": 3,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 18 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 24 }
+      ],
+      "desc": "获得 18 点罡气",
+      "desc_up": "获得 24 点罡气",
+      "flavor": "金刚之躯，百邪不侵。"
+    },
+    {
+      "id": "luohan_gong",
+      "name": "罗汉功",
+      "name_en": "Arhat Art",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 12 },
+        { "type": "draw", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 16 },
+        { "type": "draw", "value": 1 }
+      ],
+      "desc": "获得 12 点罡气，抽 1 张牌",
+      "desc_up": "获得 16 点罡气，抽 1 张牌",
+      "flavor": "外练筋骨，内修禅心。"
+    },
+    {
+      "id": "fanshi_gangqi",
+      "name": "反噬罡气",
+      "name_en": "Counter Qi",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 8 },
+        { "type": "apply_buff", "buff": "thorns", "stacks": 3 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 11 },
+        { "type": "apply_buff", "buff": "thorns", "stacks": 3 }
+      ],
+      "desc": "获得 8 点罡气，获得 3 层反噬",
+      "desc_up": "获得 11 点罡气，获得 3 层反噬",
+      "flavor": "攻我者，必受反噬。"
+    },
+    {
+      "id": "tongpi_tiegu",
+      "name": "铜皮铁骨",
+      "name_en": "Bronze Skin Iron Bones",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 10 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 14 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 2 }
+      ],
+      "desc": "获得 10 点罡气，获得 2 层身法",
+      "desc_up": "获得 14 点罡气，获得 2 层身法",
+      "flavor": "铜皮铁骨，刀枪不入。"
+    },
+    {
+      "id": "linggui_ke",
+      "name": "灵龟壳",
+      "name_en": "Spirit Tortoise Shell",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 14 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 18 }
+      ],
+      "desc": "获得 14 点罡气",
+      "desc_up": "获得 18 点罡气",
+      "flavor": "灵龟之壳，坚不可摧。"
+    },
+    {
+      "id": "tiangang_bu",
+      "name": "天罡步",
+      "name_en": "Heavenly Steps",
+      "rarity": "advanced",
+      "cost": 1,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "draw", "value": 3 },
+        { "type": "discard", "value": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "draw", "value": 4 },
+        { "type": "discard", "value": 1 }
+      ],
+      "desc": "抽 3 张牌，弃 1 张手牌",
+      "desc_up": "抽 4 张牌，弃 1 张手牌",
+      "flavor": "踏罡步斗，趋吉避凶。"
+    },
+    {
+      "id": "dahuandan",
+      "name": "大还丹",
+      "name_en": "Great Rejuvenation Pill",
+      "rarity": "advanced",
+      "cost": 2,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "heal", "value": 12 }
+      ],
+      "upgrade_effects": [
+        { "type": "heal", "value": 18 }
+      ],
+      "desc": "回复 12 点生命",
+      "desc_up": "回复 18 点生命",
+      "flavor": "丹成九转，生死人肉白骨。"
+    },
+    {
+      "id": "hunyuan_yiqi",
+      "name": "混元一气",
+      "name_en": "Primordial Qi",
+      "rarity": "advanced",
+      "cost": 1,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "energy", "value": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "energy", "value": 3 }
+      ],
+      "desc": "获得 2 点灵力",
+      "desc_up": "获得 3 点灵力",
+      "flavor": "混元一气，生生不息。"
+    },
+    {
+      "id": "yuqi_feixing",
+      "name": "御气飞行",
+      "name_en": "Qi Flight",
+      "rarity": "advanced",
+      "cost": 0,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "draw", "value": 2 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 1 }
+      ],
+      "upgrade_effects": [
+        { "type": "draw", "value": 3 },
+        { "type": "apply_buff", "buff": "dexterity", "stacks": 1 }
+      ],
+      "desc": "抽 2 张牌，获得 1 层身法",
+      "desc_up": "抽 3 张牌，获得 1 层身法",
+      "flavor": "御气腾空，俯瞰众生。"
+    },
+    {
+      "id": "yujian_feixing",
+      "name": "御剑飞行",
+      "name_en": "Sword Flying",
+      "rarity": "rare",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 20 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 26 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 2 }
+      ],
+      "desc": "造成 20 点伤害，获得 2 层剑意",
+      "desc_up": "造成 26 点伤害，获得 2 层剑意",
+      "flavor": "御剑乘风，剑仙本色。"
+    },
+    {
+      "id": "mieshi_jianyi",
+      "name": "灭世剑意",
+      "name_en": "World-Destroying Sword Intent",
+      "rarity": "rare",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 28 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 36 }
+      ],
+      "desc": "造成 28 点伤害",
+      "desc_up": "造成 36 点伤害",
+      "flavor": "此剑一出，天地失色。"
+    },
+    {
+      "id": "wandu_shixin",
+      "name": "万毒噬心",
+      "name_en": "Ten Thousand Poisons",
+      "rarity": "rare",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        {
+          "type": "apply_buff",
+          "buff": "poison",
+          "stacks": 5,
+          "value": 5,
+          "conditional": {
+            "when": "target_has_poison",
+            "value": 8
+          }
+        }
+      ],
+      "upgrade_effects": [
+        {
+          "type": "apply_buff",
+          "buff": "poison",
+          "stacks": 6,
+          "value": 6,
+          "conditional": {
+            "when": "target_has_poison",
+            "value": 10
+          }
+        }
+      ],
+      "desc": "施加 5 层毒煞；目标已有毒煞则改为 8 层",
+      "desc_up": "施加 6 层毒煞；目标已有毒煞则改为 10 层",
+      "flavor": "万毒入体，蚀骨噬心。"
+    },
+    {
+      "id": "tiangang_shengti",
+      "name": "天罡圣体",
+      "name_en": "Heavenly Body",
+      "rarity": "rare",
+      "cost": 3,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 18 },
+        { "type": "apply_buff", "buff": "regen", "stacks": 3 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 24 },
+        { "type": "apply_buff", "buff": "regen", "stacks": 4 }
+      ],
+      "desc": "获得 18 点罡气，获得 3 层生生不息",
+      "desc_up": "获得 24 点罡气，获得 4 层生生不息",
+      "flavor": "以天罡为体，生生不息。"
+    },
+    {
+      "id": "qiankun_yizhi",
+      "name": "乾坤一掷",
+      "name_en": "Universe Throw",
+      "rarity": "rare",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "multi_hit", "times": 2, "value": 6 }
+      ],
+      "upgrade_effects": [
+        { "type": "multi_hit", "times": 2, "value": 8 }
+      ],
+      "desc": "造成 2 次 6 点伤害",
+      "desc_up": "造成 2 次 8 点伤害",
+      "flavor": "乾坤之力，尽在这一掷。"
+    },
+    {
+      "id": "yiqi_hua_sanqing",
+      "name": "一气化三清",
+      "name_en": "Three Purities",
+      "rarity": "rare",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "multi_hit", "times": 3, "value": 4 }
+      ],
+      "upgrade_effects": [
+        { "type": "multi_hit", "times": 3, "value": 5 }
+      ],
+      "desc": "造成 3 次 4 点伤害",
+      "desc_up": "造成 3 次 5 点伤害",
+      "flavor": "一气化三，虚实难辨。"
+    },
+    {
+      "id": "xiantian_gangqi",
+      "name": "先天罡气",
+      "name_en": "Innate Qi",
+      "rarity": "rare",
+      "cost": 2,
+      "type": "defense",
+      "target": "self",
+      "effects": [
+        { "type": "block", "value": 14 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "block", "value": 18 },
+        { "type": "apply_buff", "buff": "strength", "stacks": 2 }
+      ],
+      "desc": "获得 14 点罡气，获得 2 层剑意",
+      "desc_up": "获得 18 点罡气，获得 2 层剑意",
+      "flavor": "先天一气，与天同寿。"
+    },
+    {
+      "id": "xisui_fagu",
+      "name": "洗髓伐骨",
+      "name_en": "Marrow Washing",
+      "rarity": "rare",
+      "cost": 3,
+      "type": "skill",
+      "target": "self",
+      "effects": [
+        { "type": "heal", "value": 20 },
+        { "type": "cleanse" }
+      ],
+      "upgrade_effects": [
+        { "type": "heal", "value": 25 },
+        { "type": "cleanse" }
+      ],
+      "desc": "回复 20 点生命，清除所有负面状态",
+      "desc_up": "回复 25 点生命，清除所有负面状态",
+      "flavor": "脱胎换骨，重回巅峰。"
+    },
+    {
+      "id": "jianpo_xukong",
+      "name": "剑破虚空",
+      "name_en": "Void Breaker",
+      "rarity": "rare",
+      "cost": 3,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 16 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 20 },
+        { "type": "apply_buff", "buff": "vulnerable", "stacks": 2 }
+      ],
+      "desc": "造成 16 点伤害，施加 2 层破绽",
+      "desc_up": "造成 20 点伤害，施加 2 层破绽",
+      "flavor": "一剑破空，无物可挡。"
+    },
+    {
+      "id": "lingxi_yizhi",
+      "name": "灵犀一指",
+      "name_en": "Rhino Horn Finger",
+      "rarity": "rare",
+      "cost": 2,
+      "type": "attack",
+      "target": "enemy",
+      "effects": [
+        { "type": "damage", "value": 10 },
+        { "type": "draw", "value": 2 }
+      ],
+      "upgrade_effects": [
+        { "type": "damage", "value": 13 },
+        { "type": "draw", "value": 2 }
+      ],
+      "desc": "造成 10 点伤害，抽 2 张牌",
+      "desc_up": "造成 13 点伤害，抽 2 张牌",
+      "flavor": "心念一动，一指定乾坤。"
     }
   ]
 }
