@@ -24,6 +24,7 @@ namespace Xianmen
         public static int Herb;
         public static List<string> Deck = new List<string>();
         public static List<string> Relics = new List<string>();
+        public static List<string> PendingRelics = new List<string>();
         public static int CurrentNodeIndex;
         public static List<MapNode> MapNodes = new List<MapNode>();
         public static bool InRun;
@@ -53,6 +54,7 @@ namespace Xianmen
             Herb = 0;
             Deck = new List<string>(StartDeck);
             Relics = new List<string>();
+            PendingRelics = new List<string>();
             CurrentNodeIndex = 0;
             MapNodes = MapGenerator.Generate();
             InRun = true;
@@ -85,6 +87,39 @@ namespace Xianmen
             Save();
         }
 
+        public static string BaseCardId(string entry)
+        {
+            return string.IsNullOrEmpty(entry) ? entry : (entry.EndsWith("+") ? entry.Substring(0, entry.Length - 1) : entry);
+        }
+
+        public static bool IsUpgraded(string entry)
+        {
+            return !string.IsNullOrEmpty(entry) && entry.EndsWith("+");
+        }
+
+        public static bool UpgradeCardAt(int deckIndex)
+        {
+            if (deckIndex < 0 || deckIndex >= Deck.Count) return false;
+            var entry = Deck[deckIndex];
+            if (IsUpgraded(entry)) return false;
+            Deck[deckIndex] = entry + "+";
+            Save();
+            return true;
+        }
+
+        public static void EndRun()
+        {
+            InRun = false;
+            try
+            {
+                if (File.Exists(SavePath)) File.Delete(SavePath);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("EndRun cleanup failed: " + e.Message);
+            }
+        }
+
         public static bool HasSave()
         {
             return File.Exists(SavePath);
@@ -101,6 +136,7 @@ namespace Xianmen
                 herb = Herb,
                 deck = Deck,
                 relics = Relics,
+                pending_relics = PendingRelics,
                 current_node_index = CurrentNodeIndex,
                 map_nodes = MapNodes
             };
@@ -121,6 +157,7 @@ namespace Xianmen
                 Herb = data.herb;
                 Deck = data.deck ?? new List<string>();
                 Relics = data.relics ?? new List<string>();
+                PendingRelics = data.pending_relics ?? new List<string>();
                 CurrentNodeIndex = data.current_node_index;
                 MapNodes = data.map_nodes ?? new List<MapNode>();
                 InRun = true;
@@ -143,6 +180,7 @@ namespace Xianmen
         public int herb;
         public List<string> deck;
         public List<string> relics;
+        public List<string> pending_relics;
         public int current_node_index;
         public List<MapNode> map_nodes;
     }

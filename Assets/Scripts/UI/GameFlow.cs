@@ -14,18 +14,40 @@ namespace Xianmen
         private GameObject _mapRoot;
         private GameObject _battleRoot;
         private GameObject _rewardRoot;
+        private GameObject _hubRoot;
+        private GameObject _shopRoot;
+        private GameObject _upgradeRoot;
+        private GameObject _eventRoot;
+        private GameObject _victoryRoot;
+        private GameObject _defeatRoot;
         private Text _mapStatus;
         private Text _enemyStatus;
         private Text _playerStatus;
         private Text _battleLog;
         private Text _rewardInfo;
+        private Text _hubStatus;
+        private Text _shopInfo;
+        private Text _upgradeInfo;
+        private Text _eventTitle;
+        private Text _eventText;
+        private Text _victoryText;
+        private Text _defeatText;
         private Transform _handRoot;
         private Transform _rewardCardRoot;
+        private Transform _shopCardRoot;
+        private Transform _upgradeCardRoot;
+        private Transform _eventOptionRoot;
         private Button _endTurnButton;
         private Button _battleContinueButton;
+        private Button _claimRelicButton;
         private readonly List<Button> _handButtons = new List<Button>();
         private readonly List<Button> _rewardButtons = new List<Button>();
+        private readonly List<Button> _shopButtons = new List<Button>();
+        private readonly List<Button> _upgradeButtons = new List<Button>();
+        private readonly List<Button> _eventButtons = new List<Button>();
         private List<string> _pendingCardOffers = new List<string>();
+        private List<string> _shopOffers = new List<string>();
+        private EventData _currentEvent;
 
         private static readonly string[] NormalEnemies =
         {
@@ -58,6 +80,11 @@ namespace Xianmen
             BuildMap();
             BuildBattlePanel();
             BuildRewardPanel();
+            BuildHubPanel();
+            BuildShopPanel();
+            BuildUpgradePanel();
+            BuildEventPanel();
+            BuildEndPanels();
             ShowMenu();
         }
 
@@ -132,7 +159,7 @@ namespace Xianmen
             _battleLog = CreateText("", 24, _battleRoot.transform);
             _battleLog.rectTransform.sizeDelta = new Vector2(700, 50);
             _endTurnButton = CreateButton("结束回合", _battleRoot.transform, OnEndTurnPressed);
-            _battleContinueButton = CreateButton("返回地图", _battleRoot.transform, OnBattleContinuePressed);
+            _battleContinueButton = CreateButton("继续", _battleRoot.transform, OnBattleContinuePressed);
             _battleContinueButton.gameObject.SetActive(false);
         }
 
@@ -157,6 +184,96 @@ namespace Xianmen
 
             CreateButton("跳过奖励", _rewardRoot.transform, OnSkipRewardPressed);
             _rewardRoot.SetActive(false);
+        }
+
+        private void BuildHubPanel()
+        {
+            _hubRoot = CreateVerticalPanel("HubRoot", _canvas.transform);
+            var title = CreateText("宗门", 48, _hubRoot.transform);
+            title.rectTransform.sizeDelta = new Vector2(500, 80);
+            _hubStatus = CreateText("", 26, _hubRoot.transform);
+            _hubStatus.rectTransform.sizeDelta = new Vector2(760, 90);
+            CreateButton("坊市（买卡）", _hubRoot.transform, ShowShop);
+            CreateButton("祭炼（升级卡牌）", _hubRoot.transform, ShowUpgrade);
+            CreateButton("打坐", _hubRoot.transform, OnHubRestPressed);
+            _claimRelicButton = CreateButton("领取遗物", _hubRoot.transform, OnClaimRelicPressed);
+            CreateButton("继续前进", _hubRoot.transform, OnHubContinuePressed);
+            _hubRoot.SetActive(false);
+        }
+
+        private void BuildShopPanel()
+        {
+            _shopRoot = CreateVerticalPanel("ShopRoot", _canvas.transform);
+            var title = CreateText("坊市", 40, _shopRoot.transform);
+            title.rectTransform.sizeDelta = new Vector2(500, 70);
+            _shopInfo = CreateText("当前货架", 24, _shopRoot.transform);
+            _shopInfo.rectTransform.sizeDelta = new Vector2(760, 60);
+            var cardGo = new GameObject("ShopCardRoot", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            cardGo.transform.SetParent(_shopRoot.transform, false);
+            _shopCardRoot = cardGo.transform;
+            var cardRect = _shopCardRoot.GetComponent<RectTransform>();
+            cardRect.sizeDelta = new Vector2(900, 90);
+            var cardLayout = _shopCardRoot.GetComponent<HorizontalLayoutGroup>();
+            cardLayout.childAlignment = TextAnchor.MiddleCenter;
+            cardLayout.childControlWidth = false;
+            cardLayout.childControlHeight = false;
+            cardLayout.spacing = 12;
+            CreateButton("离开坊市", _shopRoot.transform, ShowHub);
+            _shopRoot.SetActive(false);
+        }
+
+        private void BuildUpgradePanel()
+        {
+            _upgradeRoot = CreateVerticalPanel("UpgradeRoot", _canvas.transform);
+            var title = CreateText("祭炼", 40, _upgradeRoot.transform);
+            title.rectTransform.sizeDelta = new Vector2(500, 70);
+            _upgradeInfo = CreateText("选择要升级的卡牌（凡阶 10灵石+2药材 / 灵阶 15+3 / 仙阶 20+5）", 22, _upgradeRoot.transform);
+            _upgradeInfo.rectTransform.sizeDelta = new Vector2(900, 70);
+            var cardGo = new GameObject("UpgradeCardRoot", typeof(RectTransform), typeof(VerticalLayoutGroup));
+            cardGo.transform.SetParent(_upgradeRoot.transform, false);
+            _upgradeCardRoot = cardGo.transform;
+            var cardLayout = _upgradeCardRoot.GetComponent<VerticalLayoutGroup>();
+            cardLayout.childAlignment = TextAnchor.MiddleCenter;
+            cardLayout.childControlWidth = false;
+            cardLayout.childControlHeight = false;
+            cardLayout.spacing = 8;
+            CreateButton("离开祭炼", _upgradeRoot.transform, ShowHub);
+            _upgradeRoot.SetActive(false);
+        }
+
+        private void BuildEventPanel()
+        {
+            _eventRoot = CreateVerticalPanel("EventRoot", _canvas.transform);
+            _eventTitle = CreateText("奇遇", 36, _eventRoot.transform);
+            _eventTitle.rectTransform.sizeDelta = new Vector2(600, 60);
+            _eventText = CreateText("", 24, _eventRoot.transform);
+            _eventText.rectTransform.sizeDelta = new Vector2(820, 170);
+            var optionGo = new GameObject("EventOptionRoot", typeof(RectTransform), typeof(VerticalLayoutGroup));
+            optionGo.transform.SetParent(_eventRoot.transform, false);
+            _eventOptionRoot = optionGo.transform;
+            var optionLayout = _eventOptionRoot.GetComponent<VerticalLayoutGroup>();
+            optionLayout.childAlignment = TextAnchor.MiddleCenter;
+            optionLayout.spacing = 10;
+            _eventRoot.SetActive(false);
+        }
+
+        private void BuildEndPanels()
+        {
+            _victoryRoot = CreateVerticalPanel("VictoryRoot", _canvas.transform);
+            var vTitle = CreateText("通关！", 48, _victoryRoot.transform);
+            vTitle.rectTransform.sizeDelta = new Vector2(500, 80);
+            _victoryText = CreateText("", 24, _victoryRoot.transform);
+            _victoryText.rectTransform.sizeDelta = new Vector2(820, 220);
+            CreateButton("返回主界面", _victoryRoot.transform, OnVictoryBackPressed);
+
+            _defeatRoot = CreateVerticalPanel("DefeatRoot", _canvas.transform);
+            var dTitle = CreateText("道途断绝", 48, _defeatRoot.transform);
+            dTitle.rectTransform.sizeDelta = new Vector2(500, 80);
+            _defeatText = CreateText("", 24, _defeatRoot.transform);
+            _defeatText.rectTransform.sizeDelta = new Vector2(820, 220);
+            CreateButton("重新开始", _defeatRoot.transform, OnDefeatRestartPressed);
+            _victoryRoot.SetActive(false);
+            _defeatRoot.SetActive(false);
         }
 
         private GameObject CreateVerticalPanel(string name, Transform parent)
@@ -237,6 +354,12 @@ namespace Xianmen
             if (_mapRoot != null) _mapRoot.SetActive(false);
             if (_battleRoot != null) _battleRoot.SetActive(false);
             if (_rewardRoot != null) _rewardRoot.SetActive(false);
+            if (_hubRoot != null) _hubRoot.SetActive(false);
+            if (_shopRoot != null) _shopRoot.SetActive(false);
+            if (_upgradeRoot != null) _upgradeRoot.SetActive(false);
+            if (_eventRoot != null) _eventRoot.SetActive(false);
+            if (_victoryRoot != null) _victoryRoot.SetActive(false);
+            if (_defeatRoot != null) _defeatRoot.SetActive(false);
         }
 
         private void OnStartPressed()
@@ -270,11 +393,10 @@ namespace Xianmen
                     var heal = Mathf.CeilToInt(GameState.MaxHp * healRatio);
                     GameState.CurrentHp = Mathf.Min(GameState.MaxHp, GameState.CurrentHp + heal);
                     GameState.Save();
-                    GameState.AdvanceNode();
-                    ShowMap();
+                    ShowHub();
                     break;
                 case "event":
-                    _mapStatus.text = "奇遇事件待接入";
+                    ShowEvent();
                     break;
             }
         }
@@ -370,16 +492,14 @@ namespace Xianmen
             {
                 if (GameState.CurrentNodeIndex >= GameState.MapNodes.Count - 1)
                 {
-                    _mapStatus.text = "通关结算待实现";
-                    ShowMenu();
+                    ShowVictory();
                     return;
                 }
                 ShowRewards();
             }
             else
             {
-                GameState.StartNewRun();
-                ShowMenu();
+                ShowDefeat();
             }
         }
 
@@ -388,7 +508,7 @@ namespace Xianmen
             var node = GameState.CurrentNode;
             if (node == null)
             {
-                AdvanceAndShowMap();
+                ShowHub();
                 return;
             }
 
@@ -401,14 +521,15 @@ namespace Xianmen
             }
             if (!string.IsNullOrEmpty(reward.relic))
             {
-                GameState.AddRelic(reward.relic);
+                GameState.PendingRelics.Add(reward.relic);
+                GameState.Save();
             }
 
             var relicName = "";
             if (!string.IsNullOrEmpty(reward.relic))
             {
                 var relic = DataLoader.GetRelic(reward.relic);
-                relicName = relic != null ? "，获得遗物「" + relic.name + "」" : "";
+                relicName = relic != null ? "，获得遗物「" + relic.name + "」（回宗门领取）" : "";
             }
             _rewardInfo.text = string.Format(
                 "灵石 +{0}  药材 +{1}{2}{3}",
@@ -457,18 +578,286 @@ namespace Xianmen
         {
             if (index < 0 || index >= _pendingCardOffers.Count) return;
             GameState.AddCardToDeck(_pendingCardOffers[index]);
-            AdvanceAndShowMap();
+            ShowHub();
         }
 
         private void OnSkipRewardPressed()
         {
-            AdvanceAndShowMap();
+            ShowHub();
         }
 
-        private void AdvanceAndShowMap()
+        private void ShowHub()
+        {
+            RefreshHubStatus();
+            HideAllPanels();
+            if (_hubRoot != null) _hubRoot.SetActive(true);
+        }
+
+        private void RefreshHubStatus()
+        {
+            _hubStatus.text = string.Format(
+                "灵石 {0}  药材 {1}  生命 {2}/{3}",
+                GameState.SpiritStone,
+                GameState.Herb,
+                GameState.CurrentHp,
+                GameState.MaxHp
+            );
+            _claimRelicButton.gameObject.SetActive(GameState.PendingRelics.Count > 0);
+            if (GameState.PendingRelics.Count > 0)
+            {
+                var label = _claimRelicButton.GetComponentInChildren<Text>();
+                label.text = "领取遗物（" + GameState.PendingRelics.Count + "）";
+            }
+        }
+
+        private void OnHubRestPressed()
+        {
+            var healRatio = GameState.Relics.Contains("lingquan") ? 0.5f : 0.3f;
+            var heal = Mathf.CeilToInt(GameState.MaxHp * healRatio);
+            GameState.CurrentHp = Mathf.Min(GameState.MaxHp, GameState.CurrentHp + heal);
+            GameState.Save();
+            RefreshHubStatus();
+        }
+
+        private void OnClaimRelicPressed()
+        {
+            foreach (var relicId in GameState.PendingRelics)
+            {
+                GameState.AddRelic(relicId);
+            }
+            GameState.PendingRelics.Clear();
+            GameState.Save();
+            RefreshHubStatus();
+        }
+
+        private void OnHubContinuePressed()
         {
             GameState.AdvanceNode();
             ShowMap();
+        }
+
+        private void ShowShop()
+        {
+            var nodeIndex = GameState.CurrentNodeIndex + 2;
+            _shopOffers = RewardSystem.RollCards(nodeIndex, 3, _rng);
+            RebuildShopCards();
+            HideAllPanels();
+            _shopRoot.SetActive(true);
+        }
+
+        private void RebuildShopCards()
+        {
+            foreach (var button in _shopButtons)
+            {
+                if (button != null) Destroy(button.gameObject);
+            }
+            _shopButtons.Clear();
+
+            for (var i = 0; i < _shopOffers.Count; i++)
+            {
+                var card = DataLoader.GetCard(_shopOffers[i]);
+                var index = i;
+                var price = ShopPrice(card);
+                var label = card != null
+                    ? string.Format("{0}（{1}）- {2}灵石", card.name, RarityName(card.rarity), price)
+                    : "?";
+                var button = CreateButton(label, _shopCardRoot, () => OnShopCardPressed(index));
+                _shopButtons.Add(button);
+            }
+        }
+
+        private int ShopPrice(CardData card)
+        {
+            if (card == null) return 0;
+            var price = card.rarity == "advanced" ? 25 : (card.rarity == "rare" ? 40 : 15);
+            if (GameState.Relics.Contains("lianqi_ge"))
+            {
+                price = Mathf.FloorToInt(price * 0.85f);
+            }
+            return price;
+        }
+
+        private void OnShopCardPressed(int index)
+        {
+            if (index < 0 || index >= _shopOffers.Count) return;
+            var card = DataLoader.GetCard(_shopOffers[index]);
+            if (card == null) return;
+            var price = ShopPrice(card);
+            if (GameState.SpiritStone < price) return;
+            GameState.AddResources(-price, 0);
+            GameState.AddCardToDeck(card.id);
+            ShowHub();
+        }
+
+        private void ShowUpgrade()
+        {
+            RebuildUpgradeCards();
+            HideAllPanels();
+            _upgradeRoot.SetActive(true);
+        }
+
+        private void RebuildUpgradeCards()
+        {
+            foreach (var button in _upgradeButtons)
+            {
+                if (button != null) Destroy(button.gameObject);
+            }
+            _upgradeButtons.Clear();
+
+            for (var i = 0; i < GameState.Deck.Count; i++)
+            {
+                var entry = GameState.Deck[i];
+                var card = DataLoader.GetCard(GameState.BaseCardId(entry));
+                if (card == null || GameState.IsUpgraded(entry)) continue;
+                var index = i;
+                var stones = card.rarity == "advanced" ? 15 : (card.rarity == "rare" ? 20 : 10);
+                var herbs = card.rarity == "advanced" ? 3 : (card.rarity == "rare" ? 5 : 2);
+                var label = string.Format(
+                    "{0}（{1}费）- {2}灵石+{3}药材",
+                    card.name,
+                    card.cost,
+                    stones,
+                    herbs
+                );
+                var button = CreateButton(label, _upgradeCardRoot, () => OnUpgradeCardPressed(index));
+                _upgradeButtons.Add(button);
+            }
+        }
+
+        private void OnUpgradeCardPressed(int deckIndex)
+        {
+            if (deckIndex < 0 || deckIndex >= GameState.Deck.Count) return;
+            var entry = GameState.Deck[deckIndex];
+            if (GameState.IsUpgraded(entry)) return;
+            var card = DataLoader.GetCard(GameState.BaseCardId(entry));
+            if (card == null) return;
+            var stones = card.rarity == "advanced" ? 15 : (card.rarity == "rare" ? 20 : 10);
+            var herbs = card.rarity == "advanced" ? 3 : (card.rarity == "rare" ? 5 : 2);
+            if (GameState.SpiritStone < stones || GameState.Herb < herbs) return;
+            GameState.AddResources(-stones, -herbs);
+            GameState.UpgradeCardAt(deckIndex);
+            RebuildUpgradeCards();
+        }
+
+        private void ShowEvent()
+        {
+            var pool = new List<EventData>(DataLoader.Events.Values);
+            if (pool.Count == 0)
+            {
+                _mapStatus.text = "没有奇遇数据";
+                return;
+            }
+            _currentEvent = pool[_rng.Next(pool.Count)];
+            _eventTitle.text = _currentEvent.name;
+            _eventText.text = _currentEvent.text;
+            RebuildEventOptions();
+            HideAllPanels();
+            _eventRoot.SetActive(true);
+        }
+
+        private void RebuildEventOptions()
+        {
+            foreach (var button in _eventButtons)
+            {
+                if (button != null) Destroy(button.gameObject);
+            }
+            _eventButtons.Clear();
+            if (_currentEvent == null || _currentEvent.options == null) return;
+
+            for (var i = 0; i < _currentEvent.options.Count; i++)
+            {
+                var option = _currentEvent.options[i];
+                var index = i;
+                var costText = "";
+                if (option.cost != null)
+                {
+                    costText = option.cost.resource == "spirit_stone"
+                        ? "（消耗 " + option.cost.value + " 灵石）"
+                        : "（消耗 " + option.cost.value + " 药材）";
+                }
+                var label = option.text + costText;
+                var button = CreateButton(label, _eventOptionRoot, () => ResolveEventOption(index));
+                button.interactable = CanAffordEventCost(option);
+                _eventButtons.Add(button);
+            }
+        }
+
+        private bool CanAffordEventCost(EventOption option)
+        {
+            if (option.cost == null) return true;
+            if (option.cost.resource == "spirit_stone") return GameState.SpiritStone >= option.cost.value;
+            if (option.cost.resource == "herb") return GameState.Herb >= option.cost.value;
+            return true;
+        }
+
+        private void ResolveEventOption(int index)
+        {
+            if (_currentEvent == null || _currentEvent.options == null) return;
+            if (index < 0 || index >= _currentEvent.options.Count) return;
+            var option = _currentEvent.options[index];
+            if (!CanAffordEventCost(option)) return;
+
+            if (option.cost != null)
+            {
+                if (option.cost.resource == "spirit_stone") GameState.AddResources(-option.cost.value, 0);
+                else if (option.cost.resource == "herb") GameState.AddResources(0, -option.cost.value);
+            }
+
+            var effect = option.effect;
+            if (effect != null)
+            {
+                switch (effect.type)
+                {
+                    case "heal":
+                        GameState.CurrentHp = Mathf.Min(GameState.MaxHp, GameState.CurrentHp + effect.value);
+                        break;
+                    case "resource":
+                        if (effect.resource == "spirit_stone") GameState.AddResources(effect.value, 0);
+                        else if (effect.resource == "herb") GameState.AddResources(0, effect.value);
+                        break;
+                    case "reward_card":
+                        var rarity = string.IsNullOrEmpty(effect.rarity) ? "advanced" : effect.rarity;
+                        var cardId = RewardSystem.RollCardOfRarity(rarity, _rng);
+                        if (cardId != null) GameState.AddCardToDeck(cardId);
+                        break;
+                    case "reward_relic":
+                        var relicId = RewardSystem.RollRelic(_rng);
+                        if (relicId != null)
+                        {
+                            GameState.PendingRelics.Add(relicId);
+                            GameState.Save();
+                        }
+                        break;
+                }
+            }
+            GameState.Save();
+            ShowHub();
+        }
+
+        private void ShowVictory()
+        {
+            _victoryText.text = "剑落，魔气散尽。\n你站在魔尊陨落之地，遥望青云山的方向。\n百年浩劫，终在你手中画上句点。\n从此，青云门的大名，将重新响彻玄天大陆。";
+            HideAllPanels();
+            _victoryRoot.SetActive(true);
+        }
+
+        private void OnVictoryBackPressed()
+        {
+            GameState.EndRun();
+            ShowMenu();
+        }
+
+        private void ShowDefeat()
+        {
+            _defeatText.text = "眼前一黑，你倒在了半途。\n青云门的火种，似乎就要熄灭了……\n（重新开始，宗门复兴之路，尚可再来。）";
+            HideAllPanels();
+            _defeatRoot.SetActive(true);
+        }
+
+        private void OnDefeatRestartPressed()
+        {
+            GameState.EndRun();
+            ShowMenu();
         }
 
         private void OnQuitPressed()

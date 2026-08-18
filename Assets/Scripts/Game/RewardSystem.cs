@@ -62,7 +62,7 @@ namespace Xianmen
             return result;
         }
 
-        private static List<string> RollCards(int nodeIndex, int count, System.Random rng)
+        public static List<string> RollCards(int nodeIndex, int count, System.Random rng)
         {
             var allowed = new HashSet<string> { "basic" };
             if (DataLoader.MapConfig != null && DataLoader.MapConfig.rarity_by_node != null)
@@ -93,7 +93,18 @@ namespace Xianmen
             return offers;
         }
 
-        private static string RollRelic(System.Random rng)
+        public static string RollCardOfRarity(string rarity, System.Random rng)
+        {
+            var pool = new List<string>();
+            foreach (var card in DataLoader.Cards.Values)
+            {
+                if (card.rarity == rarity) pool.Add(card.id);
+            }
+            if (pool.Count == 0) return null;
+            return pool[rng.Next(pool.Count)];
+        }
+
+        public static string RollRelic(System.Random rng)
         {
             var pool = new List<string>(DataLoader.Relics.Keys);
             if (pool.Count == 0) return null;

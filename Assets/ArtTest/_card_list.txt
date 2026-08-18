@@ -1,0 +1,60 @@
+ 1 basic    attack   御剑术
+ 2 basic    attack   连环剑
+ 3 basic    attack   突刺
+ 4 basic    attack   斩风
+ 5 basic    attack   破甲剑
+ 6 basic    attack   毒煞掌
+ 7 basic    attack   剑气
+ 8 basic    attack   劈山剑
+ 9 basic    attack   震地拳
+10 basic    attack   烈焰掌
+11 basic    attack   追魂刺
+12 basic    attack   横扫
+13 basic    attack   碎骨击
+14 basic    attack   御风剑
+15 basic    defense  罡气护体
+16 basic    defense  铁布衫
+17 basic    defense  磐石功
+18 basic    defense  金钟罩
+19 basic    defense  卸力
+20 basic    defense  护心镜
+21 basic    defense  龟息功
+22 basic    defense  天罡罩
+23 basic    defense  挡剑诀
+24 basic    skill    吐纳术
+25 basic    skill    凝神
+26 basic    skill    聚气
+27 basic    skill    静心诀
+28 basic    skill    疾行步
+29 basic    skill    疗伤术
+30 basic    skill    引气入体
+31 advanced attack   万剑诀
+32 advanced attack   雷霆剑
+33 advanced attack   幽冥鬼爪
+34 advanced attack   血煞斩
+35 advanced attack   破军
+36 advanced attack   御雷术
+37 advanced attack   焚天掌
+38 advanced attack   剑心通明
+39 advanced attack   御兽诀
+40 advanced attack   天雷正法
+41 advanced defense  太极护体
+42 advanced defense  金刚不坏
+43 advanced defense  罗汉功
+44 advanced defense  反噬罡气
+45 advanced defense  铜皮铁骨
+46 advanced defense  灵龟壳
+47 advanced skill    天罡步
+48 advanced skill    大还丹
+49 advanced skill    混元一气
+50 advanced skill    御气飞行
+51 rare     attack   御剑飞行
+52 rare     attack   灭世剑意
+53 rare     attack   万毒噬心
+54 rare     defense  天罡圣体
+55 rare     attack   乾坤一掷
+56 rare     attack   一气化三清
+57 rare     defense  先天罡气
+58 rare     skill    洗髓伐骨
+59 rare     attack   剑破虚空
+60 rare     attack   灵犀一指
