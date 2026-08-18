@@ -21,6 +21,7 @@ namespace Xianmen
         private GameObject _victoryRoot;
         private GameObject _defeatRoot;
         private GameObject _deckRoot;
+        private GameObject _cardDetailRoot;
         private Text _mapStatus;
         private Text _enemyStatus;
         private Text _playerStatus;
@@ -33,6 +34,9 @@ namespace Xianmen
         private Text _eventText;
         private Text _victoryText;
         private Text _defeatText;
+        private Text _battleTitle;
+        private Text _cardDetailTitle;
+        private Text _cardDetailDesc;
         private Transform _handRoot;
         private Transform _rewardCardRoot;
         private Transform _shopCardRoot;
@@ -42,6 +46,7 @@ namespace Xianmen
         private Button _endTurnButton;
         private Button _battleContinueButton;
         private Button _claimRelicButton;
+        private Button _continueButton;
         private Image _enemyImage;
         private readonly List<Button> _handButtons = new List<Button>();
         private readonly List<Button> _rewardButtons = new List<Button>();
@@ -91,6 +96,7 @@ namespace Xianmen
             BuildEventPanel();
             BuildEndPanels();
             BuildDeckPanel();
+            BuildCardDetailPanel();
             ShowMenu();
         }
 
@@ -125,8 +131,10 @@ namespace Xianmen
             _menuRoot = CreateVerticalPanel("MenuRoot", _canvas.transform);
             var title = CreateText("仙门问道", 72, _menuRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 120);
+            var subtitle = CreateText("一人一宗，对抗漫天魔气 · Demo", 22, _menuRoot.transform);
+            subtitle.rectTransform.sizeDelta = new Vector2(500, 40);
             CreateButton("开始游戏", _menuRoot.transform, OnStartPressed);
-            CreateButton("继续", _menuRoot.transform, OnContinuePressed);
+            _continueButton = CreateButton("继续", _menuRoot.transform, OnContinuePressed);
             CreateButton("退出", _menuRoot.transform, OnQuitPressed);
         }
 
@@ -172,8 +180,8 @@ namespace Xianmen
         private void BuildBattlePanel()
         {
             _battleRoot = CreateVerticalPanel("BattleRoot", _canvas.transform, 1320, 920);
-            var title = CreateText("战斗", 48, _battleRoot.transform);
-            title.rectTransform.sizeDelta = new Vector2(500, 80);
+            _battleTitle = CreateText("战斗", 48, _battleRoot.transform);
+            _battleTitle.rectTransform.sizeDelta = new Vector2(500, 80);
             var enemyGo = new GameObject("EnemyImage", typeof(RectTransform), typeof(Image));
             enemyGo.transform.SetParent(_battleRoot.transform, false);
             _enemyImage = enemyGo.GetComponent<Image>();
@@ -335,6 +343,31 @@ namespace Xianmen
             _deckRoot.SetActive(false);
         }
 
+        private void BuildCardDetailPanel()
+        {
+            _cardDetailRoot = new GameObject("CardDetail", typeof(RectTransform), typeof(Image), typeof(VerticalLayoutGroup));
+            _cardDetailRoot.transform.SetParent(_canvas.transform, false);
+            var rect = _cardDetailRoot.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(1f, 0.5f);
+            rect.anchorMax = new Vector2(1f, 0.5f);
+            rect.pivot = new Vector2(1f, 0.5f);
+            rect.anchoredPosition = new Vector2(-30, 0);
+            rect.sizeDelta = new Vector2(380, 320);
+            var image = _cardDetailRoot.GetComponent<Image>();
+            image.color = new Color(0.08f, 0.1f, 0.14f, 0.95f);
+            var layout = _cardDetailRoot.GetComponent<VerticalLayoutGroup>();
+            layout.childAlignment = TextAnchor.UpperCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = false;
+            layout.spacing = 10;
+            layout.padding = new RectOffset(16, 16, 16, 16);
+            _cardDetailTitle = CreateText("", 28, _cardDetailRoot.transform);
+            _cardDetailTitle.alignment = TextAnchor.MiddleCenter;
+            _cardDetailDesc = CreateText("", 19, _cardDetailRoot.transform);
+            _cardDetailDesc.alignment = TextAnchor.UpperLeft;
+            _cardDetailRoot.SetActive(false);
+        }
+
         private GameObject CreateVerticalPanel(string name, Transform parent, float width = 520, float height = 480)
         {
             var go = new GameObject(name, typeof(RectTransform), typeof(VerticalLayoutGroup));
@@ -388,6 +421,10 @@ namespace Xianmen
         {
             HideAllPanels();
             if (_menuRoot != null) _menuRoot.SetActive(true);
+            if (_continueButton != null)
+            {
+                _continueButton.interactable = GameState.HasSave();
+            }
         }
 
         private void ShowMap()
@@ -405,6 +442,7 @@ namespace Xianmen
                 var node = GameState.MapNodes[i];
                 var image = _mapNodeImages[i];
                 var sprite = SpriteLibrary.Node(node.type);
+                var passed = i < GameState.CurrentNodeIndex;
                 if (sprite != null)
                 {
                     image.sprite = sprite;
@@ -418,6 +456,12 @@ namespace Xianmen
                     image.color = i == GameState.CurrentNodeIndex
                         ? new Color(1f, 0.85f, 0.3f, 1f)
                         : NodeColor(node.type);
+                }
+                if (passed)
+                {
+                    var dimmed = image.color;
+                    dimmed.a = 0.45f;
+                    image.color = dimmed;
                 }
             }
             var current = GameState.CurrentNode;
@@ -472,6 +516,7 @@ namespace Xianmen
             if (_eventRoot != null) _eventRoot.SetActive(false);
             if (_victoryRoot != null) _victoryRoot.SetActive(false);
             if (_defeatRoot != null) _defeatRoot.SetActive(false);
+            if (_cardDetailRoot != null) _cardDetailRoot.SetActive(false);
         }
 
         private void OnStartPressed()
@@ -517,6 +562,10 @@ namespace Xianmen
         {
             var node = GameState.CurrentNode;
             if (node == null) return;
+            if (_battleTitle != null)
+            {
+                _battleTitle.text = node.type == "elite" ? "精英战" : (node.type == "boss" ? "Boss 战" : "战斗");
+            }
             var enemyId = PickEnemyId(node.type);
             var enemy = DataLoader.GetEnemy(enemyId);
             if (enemy == null)
@@ -564,13 +613,14 @@ namespace Xianmen
                 FormatBuffs(_battleState.Enemy)
             );
             _playerStatus.text = string.Format(
-                "掌门\nHP {0}/{1}  罡气 {2}  灵力 {3}\n牌库 {4}  弃牌 {5}{6}",
+                "掌门 · 回合 {6}\nHP {0}/{1}  罡气 {2}  灵力 {3}\n牌库 {4}  弃牌 {5}{7}",
                 Mathf.Max(0, _battleState.Player.CurrentHp),
                 _battleState.Player.MaxHp,
                 _battleState.Player.Block,
                 _battleState.Energy,
                 _battleState.DrawPile.Count,
                 _battleState.DiscardPile.Count,
+                _battleState.TurnCount,
                 FormatBuffs(_battleState.Player)
             );
             RebuildHand();
@@ -613,8 +663,45 @@ namespace Xianmen
                 text.fontSize = 17;
                 text.alignment = TextAnchor.MiddleCenter;
                 ApplyCardIcon(button, GameState.BaseCardId(entry));
+                WireHover(button, card, upgraded);
                 _handButtons.Add(button);
             }
+        }
+
+        private void WireHover(Button button, CardData card, bool upgraded, string extra = "")
+        {
+            var trigger = button.gameObject.GetComponent<EventTrigger>();
+            if (trigger == null)
+            {
+                trigger = button.gameObject.AddComponent<EventTrigger>();
+            }
+            var enter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+            enter.callback.AddListener(_ => ShowCardDetail(card, upgraded, extra));
+            var exit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+            exit.callback.AddListener(_ => HideCardDetail());
+            trigger.triggers.Add(enter);
+            trigger.triggers.Add(exit);
+        }
+
+        private void ShowCardDetail(CardData card, bool upgraded, string extra)
+        {
+            if (card == null || _cardDetailRoot == null) return;
+            _cardDetailTitle.text = string.Format(
+                "{0}（{1}费 · {2}）{3}",
+                card.name,
+                card.cost,
+                RarityName(card.rarity),
+                upgraded ? " ✦已祭炼" : ""
+            );
+            _cardDetailDesc.text = (extra.Length > 0 ? extra + "\n\n" : "")
+                + (upgraded ? card.desc_up : card.desc)
+                + "\n\n" + card.flavor;
+            _cardDetailRoot.SetActive(true);
+        }
+
+        private void HideCardDetail()
+        {
+            if (_cardDetailRoot != null) _cardDetailRoot.SetActive(false);
         }
 
         private void ApplyCardIcon(Button button, string cardId)
@@ -721,6 +808,7 @@ namespace Xianmen
                 var label = card != null ? string.Format("{0}（{1}）", card.name, RarityName(card.rarity)) : "?";
                 var button = CreateButton(label, _rewardCardRoot, () => OnRewardCardPressed(index));
                 ApplyCardIcon(button, _pendingCardOffers[index]);
+                WireHover(button, card, false);
                 _rewardButtons.Add(button);
             }
         }
@@ -814,11 +902,12 @@ namespace Xianmen
         private void RefreshHubStatus()
         {
             _hubStatus.text = string.Format(
-                "灵石 {0}  药材 {1}  生命 {2}/{3}",
+                "灵石 {0}  药材 {1}  生命 {2}/{3}\n已走完节点 {4} / 20",
                 GameState.SpiritStone,
                 GameState.Herb,
                 GameState.CurrentHp,
-                GameState.MaxHp
+                GameState.MaxHp,
+                GameState.CurrentNodeIndex + 1
             );
             _claimRelicButton.gameObject.SetActive(GameState.PendingRelics.Count > 0);
             if (GameState.PendingRelics.Count > 0)
@@ -913,6 +1002,7 @@ namespace Xianmen
                     : "?";
                 var button = CreateButton(label, _shopCardRoot, () => OnShopCardPressed(index));
                 ApplyCardIcon(button, _shopOffers[index]);
+                WireHover(button, card, false, "价格 " + price + " 灵石");
                 _shopButtons.Add(button);
             }
         }
