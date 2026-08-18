@@ -42,6 +42,7 @@ namespace Xianmen
         private Button _endTurnButton;
         private Button _battleContinueButton;
         private Button _claimRelicButton;
+        private Image _enemyImage;
         private readonly List<Button> _handButtons = new List<Button>();
         private readonly List<Button> _rewardButtons = new List<Button>();
         private readonly List<Button> _shopButtons = new List<Button>();
@@ -173,6 +174,11 @@ namespace Xianmen
             _battleRoot = CreateVerticalPanel("BattleRoot", _canvas.transform, 1320, 660);
             var title = CreateText("战斗", 48, _battleRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 80);
+            var enemyGo = new GameObject("EnemyImage", typeof(RectTransform), typeof(Image));
+            enemyGo.transform.SetParent(_battleRoot.transform, false);
+            _enemyImage = enemyGo.GetComponent<Image>();
+            _enemyImage.color = new Color(0.2f, 0.2f, 0.25f, 1f);
+            _enemyImage.rectTransform.sizeDelta = new Vector2(220, 170);
             _enemyStatus = CreateText("敌人", 28, _battleRoot.transform);
             _enemyStatus.rectTransform.sizeDelta = new Vector2(700, 70);
             _playerStatus = CreateText("玩家", 28, _battleRoot.transform);
@@ -396,9 +402,21 @@ namespace Xianmen
                 if (i >= GameState.MapNodes.Count) break;
                 var node = GameState.MapNodes[i];
                 var image = _mapNodeImages[i];
-                image.color = i == GameState.CurrentNodeIndex
-                    ? new Color(1f, 0.85f, 0.3f, 1f)
-                    : NodeColor(node.type);
+                var sprite = SpriteLibrary.Node(node.type);
+                if (sprite != null)
+                {
+                    image.sprite = sprite;
+                    image.color = i == GameState.CurrentNodeIndex
+                        ? Color.white
+                        : new Color(0.85f, 0.85f, 0.85f, 1f);
+                }
+                else
+                {
+                    image.sprite = null;
+                    image.color = i == GameState.CurrentNodeIndex
+                        ? new Color(1f, 0.85f, 0.3f, 1f)
+                        : NodeColor(node.type);
+                }
             }
             var current = GameState.CurrentNode;
             if (_mapStatus != null)
@@ -518,6 +536,19 @@ namespace Xianmen
         private void RenderBattle()
         {
             if (_battleState == null) return;
+            var enemySprite = _battleState.Enemy.Data != null
+                ? SpriteLibrary.Enemy(_battleState.Enemy.Data.id)
+                : null;
+            if (enemySprite != null)
+            {
+                _enemyImage.sprite = enemySprite;
+                _enemyImage.color = Color.white;
+            }
+            else
+            {
+                _enemyImage.sprite = null;
+                _enemyImage.color = new Color(0.2f, 0.2f, 0.25f, 1f);
+            }
             var intentText = _battleState.Enemy.CurrentIntent != null
                 ? DescribeIntent(_battleState.Enemy.CurrentIntent)
                 : "未知";
@@ -572,8 +603,18 @@ namespace Xianmen
                 var text = button.GetComponentInChildren<Text>();
                 text.fontSize = 17;
                 text.alignment = TextAnchor.MiddleCenter;
+                ApplyCardIcon(button, GameState.BaseCardId(entry));
                 _handButtons.Add(button);
             }
+        }
+
+        private void ApplyCardIcon(Button button, string cardId)
+        {
+            var icon = SpriteLibrary.Card(cardId);
+            if (icon == null) return;
+            var bg = button.GetComponent<Image>();
+            bg.sprite = icon;
+            bg.color = Color.white;
         }
 
         private void OnCardPressed(int handIndex)
@@ -670,6 +711,7 @@ namespace Xianmen
                 var index = i;
                 var label = card != null ? string.Format("{0}（{1}）", card.name, RarityName(card.rarity)) : "?";
                 var button = CreateButton(label, _rewardCardRoot, () => OnRewardCardPressed(index));
+                ApplyCardIcon(button, _pendingCardOffers[index]);
                 _rewardButtons.Add(button);
             }
         }
@@ -861,6 +903,7 @@ namespace Xianmen
                     ? string.Format("{0}（{1}）- {2}灵石", card.name, RarityName(card.rarity), price)
                     : "?";
                 var button = CreateButton(label, _shopCardRoot, () => OnShopCardPressed(index));
+                ApplyCardIcon(button, _shopOffers[index]);
                 _shopButtons.Add(button);
             }
         }
