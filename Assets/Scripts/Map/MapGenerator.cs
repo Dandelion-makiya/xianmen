@@ -21,6 +21,16 @@ namespace Xianmen
         public static List<MapNode> Generate(int seed = -1)
         {
             var rng = seed >= 0 ? new Random(seed) : new Random();
+            for (var attempt = 0; attempt < 50; attempt++)
+            {
+                var nodes = BuildLayout(rng);
+                if (IsValidLayout(nodes)) return nodes;
+            }
+            return FixLayout(BuildLayout(rng), rng);
+        }
+
+        private static List<MapNode> BuildLayout(Random rng)
+        {
             var nodes = new List<MapNode>();
             for (var i = 1; i <= TotalNodes; i++)
             {
@@ -62,7 +72,68 @@ namespace Xianmen
                 nodes[battleIndices[k]].type = "event";
             }
 
-            // TODO: 校验连续普通战斗不超过 MaxConsecutiveBattles，违规时重排。
+            return nodes;
+        }
+
+        private static bool IsValidLayout(List<MapNode> nodes)
+        {
+            var run = 0;
+            foreach (var node in nodes)
+            {
+                if (node.type == "battle")
+                {
+                    run++;
+                    if (run > MaxConsecutiveBattles) return false;
+                }
+                else
+                {
+                    run = 0;
+                }
+            }
+            return true;
+        }
+
+        private static List<MapNode> FixLayout(List<MapNode> nodes, Random rng)
+        {
+            var battleSlots = new List<int>();
+            for (var i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].type == "battle") battleSlots.Add(i);
+            }
+
+            var validCombos = new List<int[]>();
+            for (var a = 0; a < battleSlots.Count; a++)
+            {
+                for (var b = a + 1; b < battleSlots.Count; b++)
+                {
+                    for (var c = b + 1; c < battleSlots.Count; c++)
+                    {
+                        var candidate = new List<MapNode>();
+                        foreach (var node in nodes)
+                        {
+                            candidate.Add(new MapNode { index = node.index, type = node.type });
+                        }
+                        candidate[battleSlots[a]].type = "event";
+                        candidate[battleSlots[b]].type = "event";
+                        candidate[battleSlots[c]].type = "event";
+                        if (IsValidLayout(candidate))
+                        {
+                            validCombos.Add(new[] { battleSlots[a], battleSlots[b], battleSlots[c] });
+                        }
+                    }
+                }
+            }
+
+            if (validCombos.Count == 0) return nodes;
+
+            var chosen = validCombos[rng.Next(validCombos.Count)];
+            foreach (var slot in battleSlots)
+            {
+                nodes[slot].type = "battle";
+            }
+            nodes[chosen[0]].type = "event";
+            nodes[chosen[1]].type = "event";
+            nodes[chosen[2]].type = "event";
             return nodes;
         }
     }

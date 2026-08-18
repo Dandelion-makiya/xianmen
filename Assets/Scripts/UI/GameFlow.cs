@@ -22,6 +22,19 @@ namespace Xianmen
         private Button _battleContinueButton;
         private readonly List<Button> _handButtons = new List<Button>();
 
+        private static readonly string[] NormalEnemies =
+        {
+            "ni_zhao_jing", "yao_lang", "shanzei_lou_luo", "shanzei_tou_mu", "shi_kui",
+            "du_zhu_yao", "hei_xiong_jing", "shi_kui_jiang_jun", "huo_sha_mo", "shuang_shou_jiao",
+            "shu_yao", "shui_gui"
+        };
+
+        private static readonly string[] EliteEnemies =
+        {
+            "du_yan_shan_yao", "shi_xiang_kui_lei", "ying_mo"
+        };
+
+        private readonly System.Random _rng = new System.Random();
         private BattleState _battleState;
 
         private void Awake()
@@ -240,15 +253,22 @@ namespace Xianmen
         {
             var node = GameState.CurrentNode;
             if (node == null) return;
-            var enemyId = node.type == "boss" ? "mo_zun" : "ni_zhao_jing";
+            var enemyId = PickEnemyId(node.type);
             var enemy = DataLoader.GetEnemy(enemyId);
             if (enemy == null)
             {
                 Debug.LogError("Enemy data missing: " + enemyId);
                 return;
             }
-            _battleState = new BattleState(GameState.Deck, enemy);
+            _battleState = new BattleState(GameState.Deck, BattleState.ScaleForNode(enemy, node.index));
             ShowBattle();
+        }
+
+        private string PickEnemyId(string nodeType)
+        {
+            if (nodeType == "elite") return EliteEnemies[_rng.Next(EliteEnemies.Length)];
+            if (nodeType == "boss") return "mo_zun";
+            return NormalEnemies[_rng.Next(NormalEnemies.Length)];
         }
 
         private void RenderBattle()

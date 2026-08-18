@@ -36,6 +36,49 @@ namespace Xianmen
             StartPlayerTurn();
         }
 
+        public static EnemyData ScaleForNode(EnemyData data, int nodeIndex)
+        {
+            if (data == null || data.type == "boss") return data;
+            var ratio = Mathf.Min(1.8f, 1f + 0.05f * (nodeIndex - 1));
+            var clone = new EnemyData
+            {
+                id = data.id,
+                name = data.name,
+                type = data.type,
+                hp = Mathf.FloorToInt(data.hp * ratio),
+                mechanic = data.mechanic,
+                lore = data.lore,
+                intents = new List<EnemyIntent>()
+            };
+            foreach (var intent in data.intents)
+            {
+                clone.intents.Add(new EnemyIntent
+                {
+                    action = intent.action,
+                    value = ScaleIntentValue(intent.action, intent.value, ratio),
+                    times = intent.times,
+                    buff = intent.buff,
+                    stacks = intent.stacks,
+                    action2 = intent.action2,
+                    value2 = ScaleIntentValue(intent.action2, intent.value2, ratio),
+                    times2 = intent.times2,
+                    buff2 = intent.buff2,
+                    stacks2 = intent.stacks2
+                });
+            }
+            return clone;
+        }
+
+        private static int ScaleIntentValue(string action, int value, float ratio)
+        {
+            if (string.IsNullOrEmpty(action) || value <= 0) return value;
+            if (action == "attack" || action == "heavy_attack" || action == "multi_attack")
+            {
+                return Mathf.FloorToInt(value * ratio);
+            }
+            return value;
+        }
+
         public void StartPlayerTurn()
         {
             if (BattleOver) return;
