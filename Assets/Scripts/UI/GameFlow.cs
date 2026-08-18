@@ -13,14 +13,19 @@ namespace Xianmen
         private GameObject _menuRoot;
         private GameObject _mapRoot;
         private GameObject _battleRoot;
+        private GameObject _rewardRoot;
         private Text _mapStatus;
         private Text _enemyStatus;
         private Text _playerStatus;
         private Text _battleLog;
+        private Text _rewardInfo;
         private Transform _handRoot;
+        private Transform _rewardCardRoot;
         private Button _endTurnButton;
         private Button _battleContinueButton;
         private readonly List<Button> _handButtons = new List<Button>();
+        private readonly List<Button> _rewardButtons = new List<Button>();
+        private List<string> _pendingCardOffers = new List<string>();
 
         private static readonly string[] NormalEnemies =
         {
@@ -52,6 +57,7 @@ namespace Xianmen
             BuildMenu();
             BuildMap();
             BuildBattlePanel();
+            BuildRewardPanel();
             ShowMenu();
         }
 
@@ -128,6 +134,29 @@ namespace Xianmen
             _endTurnButton = CreateButton("结束回合", _battleRoot.transform, OnEndTurnPressed);
             _battleContinueButton = CreateButton("返回地图", _battleRoot.transform, OnBattleContinuePressed);
             _battleContinueButton.gameObject.SetActive(false);
+        }
+
+        private void BuildRewardPanel()
+        {
+            _rewardRoot = CreateVerticalPanel("RewardRoot", _canvas.transform);
+            var title = CreateText("战斗奖励", 40, _rewardRoot.transform);
+            title.rectTransform.sizeDelta = new Vector2(500, 70);
+            _rewardInfo = CreateText("", 26, _rewardRoot.transform);
+            _rewardInfo.rectTransform.sizeDelta = new Vector2(760, 90);
+
+            var cardGo = new GameObject("RewardCardRoot", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            cardGo.transform.SetParent(_rewardRoot.transform, false);
+            _rewardCardRoot = cardGo.transform;
+            var cardRect = _rewardCardRoot.GetComponent<RectTransform>();
+            cardRect.sizeDelta = new Vector2(900, 90);
+            var cardLayout = _rewardCardRoot.GetComponent<HorizontalLayoutGroup>();
+            cardLayout.childAlignment = TextAnchor.MiddleCenter;
+            cardLayout.childControlWidth = false;
+            cardLayout.childControlHeight = false;
+            cardLayout.spacing = 12;
+
+            CreateButton("跳过奖励", _rewardRoot.transform, OnSkipRewardPressed);
+            _rewardRoot.SetActive(false);
         }
 
         private GameObject CreateVerticalPanel(string name, Transform parent)
@@ -207,6 +236,7 @@ namespace Xianmen
             if (_menuRoot != null) _menuRoot.SetActive(false);
             if (_mapRoot != null) _mapRoot.SetActive(false);
             if (_battleRoot != null) _battleRoot.SetActive(false);
+            if (_rewardRoot != null) _rewardRoot.SetActive(false);
         }
 
         private void OnStartPressed()
@@ -344,14 +374,101 @@ namespace Xianmen
                     ShowMenu();
                     return;
                 }
-                GameState.AdvanceNode();
-                ShowMap();
+                ShowRewards();
             }
             else
             {
                 GameState.StartNewRun();
                 ShowMenu();
             }
+        }
+
+        private void ShowRewards()
+        {
+            var node = GameState.CurrentNode;
+            if (node == null)
+            {
+                AdvanceAndShowMap();
+                return;
+            }
+
+            var reward = RewardSystem.RollRewards(node.type, node.index, GameState.Relics, _rng);
+            GameState.AddResources(reward.stones, reward.herbs);
+            if (reward.heal > 0)
+            {
+                GameState.CurrentHp = Mathf.Min(GameState.MaxHp, GameState.CurrentHp + reward.heal);
+                GameState.Save();
+            }
+            if (!string.IsNullOrEmpty(reward.relic))
+            {
+                GameState.AddRelic(reward.relic);
+            }
+
+            var relicName = "";
+            if (!string.IsNullOrEmpty(reward.relic))
+            {
+                var relic = DataLoader.GetRelic(reward.relic);
+                relicName = relic != null ? "，获得遗物「" + relic.name + "」" : "";
+            }
+            _rewardInfo.text = string.Format(
+                "灵石 +{0}  药材 +{1}{2}{3}",
+                reward.stones,
+                reward.herbs,
+                reward.heal > 0 ? "  HP +" + reward.heal : "",
+                relicName
+            );
+
+            _pendingCardOffers = reward.cardOffers;
+            RebuildRewardCards();
+
+            HideAllPanels();
+            _rewardRoot.SetActive(true);
+        }
+
+        private void RebuildRewardCards()
+        {
+            foreach (var button in _rewardButtons)
+            {
+                if (button != null) Destroy(button.gameObject);
+            }
+            _rewardButtons.Clear();
+
+            for (var i = 0; i < _pendingCardOffers.Count; i++)
+            {
+                var card = DataLoader.GetCard(_pendingCardOffers[i]);
+                var index = i;
+                var label = card != null ? string.Format("{0}（{1}）", card.name, RarityName(card.rarity)) : "?";
+                var button = CreateButton(label, _rewardCardRoot, () => OnRewardCardPressed(index));
+                _rewardButtons.Add(button);
+            }
+        }
+
+        private string RarityName(string rarity)
+        {
+            switch (rarity)
+            {
+                case "advanced": return "灵阶";
+                case "rare": return "仙阶";
+                default: return "凡阶";
+            }
+        }
+
+        private void OnRewardCardPressed(int index)
+        {
+            if (index < 0 || index >= _pendingCardOffers.Count) return;
+            GameState.AddCardToDeck(_pendingCardOffers[index]);
+            AdvanceAndShowMap();
+        }
+
+        private void OnSkipRewardPressed()
+        {
+            AdvanceAndShowMap();
+        }
+
+        private void AdvanceAndShowMap()
+        {
+            GameState.AdvanceNode();
+            ShowMap();
         }
 
         private void OnQuitPressed()

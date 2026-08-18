@@ -21,6 +21,11 @@ namespace Xianmen
             return Enemies.TryGetValue(id, out var enemy) ? enemy : null;
         }
 
+        public static RelicData GetRelic(string id)
+        {
+            return Relics.TryGetValue(id, out var relic) ? relic : null;
+        }
+
         public static void LoadAll()
         {
             LoadCards();
