@@ -48,6 +48,9 @@ namespace Xianmen
         private Button _claimRelicButton;
         private Button _continueButton;
         private Image _enemyImage;
+        private Image _intentIcon;
+        private Image _enemyHpFill;
+        private Image _playerHpFill;
         private readonly List<Button> _handButtons = new List<Button>();
         private readonly List<Button> _rewardButtons = new List<Button>();
         private readonly List<Button> _shopButtons = new List<Button>();
@@ -182,24 +185,33 @@ namespace Xianmen
         private void BuildBattlePanel()
         {
             _battleRoot = CreateVerticalPanel("BattleRoot", _canvas.transform, 1320, 920);
+            var battleLayout = _battleRoot.GetComponent<VerticalLayoutGroup>();
+            battleLayout.spacing = 12;
             SetPanelBackground(_battleRoot, SpriteLibrary.Background("battle"));
             _battleTitle = CreateText("战斗", 48, _battleRoot.transform);
-            _battleTitle.rectTransform.sizeDelta = new Vector2(500, 80);
+            _battleTitle.rectTransform.sizeDelta = new Vector2(500, 58);
             var enemyGo = new GameObject("EnemyImage", typeof(RectTransform), typeof(Image));
             enemyGo.transform.SetParent(_battleRoot.transform, false);
             _enemyImage = enemyGo.GetComponent<Image>();
             _enemyImage.color = new Color(0.2f, 0.2f, 0.25f, 1f);
-            _enemyImage.rectTransform.sizeDelta = new Vector2(220, 170);
+            _enemyImage.rectTransform.sizeDelta = new Vector2(220, 150);
             _enemyStatus = CreateText("敌人", 28, _battleRoot.transform);
-            _enemyStatus.rectTransform.sizeDelta = new Vector2(700, 70);
+            _enemyStatus.rectTransform.sizeDelta = new Vector2(700, 58);
+            var intentGo = new GameObject("IntentIcon", typeof(RectTransform), typeof(Image));
+            intentGo.transform.SetParent(_battleRoot.transform, false);
+            _intentIcon = intentGo.GetComponent<Image>();
+            _intentIcon.color = new Color(0.7f, 0.72f, 0.78f, 0.35f);
+            _intentIcon.rectTransform.sizeDelta = new Vector2(52, 52);
+            CreateHpBar("EnemyHpBar", _battleRoot.transform, "bar_fill_enemy_hp", out _enemyHpFill);
             _playerStatus = CreateText("玩家", 28, _battleRoot.transform);
-            _playerStatus.rectTransform.sizeDelta = new Vector2(700, 70);
+            _playerStatus.rectTransform.sizeDelta = new Vector2(700, 58);
+            CreateHpBar("PlayerHpBar", _battleRoot.transform, "bar_fill_hp", out _playerHpFill);
 
             var handGo = new GameObject("HandRoot", typeof(RectTransform), typeof(HorizontalLayoutGroup));
             handGo.transform.SetParent(_battleRoot.transform, false);
             _handRoot = handGo.transform;
             var handRect = _handRoot.GetComponent<RectTransform>();
-            handRect.sizeDelta = new Vector2(1200, 96);
+            handRect.sizeDelta = new Vector2(1300, 170);
             var handLayout = _handRoot.GetComponent<HorizontalLayoutGroup>();
             handLayout.childAlignment = TextAnchor.MiddleCenter;
             handLayout.childControlWidth = false;
@@ -207,7 +219,7 @@ namespace Xianmen
             handLayout.spacing = 8;
 
             _battleLog = CreateText("", 24, _battleRoot.transform);
-            _battleLog.rectTransform.sizeDelta = new Vector2(1100, 120);
+            _battleLog.rectTransform.sizeDelta = new Vector2(1100, 72);
             _battleLog.alignment = TextAnchor.LowerLeft;
             _battleLog.fontSize = 20;
             _endTurnButton = CreateButton("结束回合", _battleRoot.transform, OnEndTurnPressed);
@@ -642,28 +654,44 @@ namespace Xianmen
                 _enemyImage.sprite = null;
                 _enemyImage.color = new Color(0.2f, 0.2f, 0.25f, 1f);
             }
-            var intentText = _battleState.Enemy.CurrentIntent != null
-                ? DescribeIntent(_battleState.Enemy.CurrentIntent)
+            var currentIntent = _battleState.Enemy.CurrentIntent;
+            var intentSprite = currentIntent != null ? SpriteLibrary.Intent(currentIntent.action) : null;
+            if (intentSprite != null)
+            {
+                _intentIcon.sprite = intentSprite;
+                _intentIcon.color = Color.white;
+            }
+            else
+            {
+                _intentIcon.sprite = null;
+                _intentIcon.color = new Color(0.7f, 0.72f, 0.78f, 0.35f);
+            }
+            var intentText = currentIntent != null
+                ? DescribeIntent(currentIntent)
                 : "未知";
             _enemyStatus.text = string.Format(
-                "{0}\nHP {1}/{2}  罡气 {3}\n意图：{4}{5}",
+                "{0}   罡气 {1}\n意图：{2}{3}",
                 _battleState.Enemy.Name,
-                Mathf.Max(0, _battleState.Enemy.CurrentHp),
-                _battleState.Enemy.MaxHp,
                 _battleState.Enemy.Block,
                 intentText,
                 FormatBuffs(_battleState.Enemy)
             );
             _playerStatus.text = string.Format(
-                "掌门 · 回合 {6}\nHP {0}/{1}  罡气 {2}  灵力 {3}\n牌库 {4}  弃牌 {5}{7}",
-                Mathf.Max(0, _battleState.Player.CurrentHp),
-                _battleState.Player.MaxHp,
+                "掌门 · 回合 {0}   罡气 {1}   灵力 {2}\n牌库 {3}   弃牌 {4}{5}",
+                _battleState.TurnCount,
                 _battleState.Player.Block,
                 _battleState.Energy,
                 _battleState.DrawPile.Count,
                 _battleState.DiscardPile.Count,
-                _battleState.TurnCount,
                 FormatBuffs(_battleState.Player)
+            );
+            SetBarFill(
+                _enemyHpFill,
+                Mathf.Clamp01((float)_battleState.Enemy.CurrentHp / Mathf.Max(1, _battleState.Enemy.MaxHp))
+            );
+            SetBarFill(
+                _playerHpFill,
+                Mathf.Clamp01((float)_battleState.Player.CurrentHp / Mathf.Max(1, _battleState.Player.MaxHp))
             );
             RebuildHand();
             _endTurnButton.interactable = _battleState.PlayerTurn && !_battleState.BattleOver;
@@ -694,20 +722,127 @@ namespace Xianmen
                 var card = DataLoader.GetCard(GameState.BaseCardId(entry));
                 var upgraded = GameState.IsUpgraded(entry);
                 var index = i;
-                var desc = card != null ? (upgraded ? card.desc_up : card.desc) : "";
-                var label = card != null
-                    ? string.Format("{0}（{1}费）{2}\n{3}", card.name, card.cost, upgraded ? "✦" : "", desc)
-                    : "?";
-                var button = CreateButton(label, _handRoot, () => OnCardPressed(index));
-                button.GetComponent<RectTransform>().sizeDelta = new Vector2(300, 86);
-                button.interactable = _battleState.PlayerTurn && !_battleState.BattleOver && card.cost <= _battleState.Energy;
-                var text = button.GetComponentInChildren<Text>();
-                text.fontSize = 17;
-                text.alignment = TextAnchor.MiddleCenter;
-                ApplyCardIcon(button, GameState.BaseCardId(entry));
+                if (card == null) continue;
+                var button = CreateHandCard(
+                    card,
+                    upgraded,
+                    _handRoot,
+                    () => OnCardPressed(index),
+                    _battleState.PlayerTurn && !_battleState.BattleOver && card.cost <= _battleState.Energy
+                );
                 WireHover(button, card, upgraded);
                 _handButtons.Add(button);
             }
+        }
+
+        private Button CreateHandCard(
+            CardData card,
+            bool upgraded,
+            Transform parent,
+            UnityEngine.Events.UnityAction onClick,
+            bool interactable)
+        {
+            var go = new GameObject("Card", typeof(RectTransform), typeof(Image), typeof(Button));
+            go.transform.SetParent(parent, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(108, 150);
+            var image = go.GetComponent<Image>();
+            image.raycastTarget = true;
+            var frame = SpriteLibrary.Frame(card.rarity);
+            if (frame != null)
+            {
+                image.sprite = frame;
+                image.color = interactable ? Color.white : new Color(0.72f, 0.72f, 0.76f, 0.78f);
+            }
+            else
+            {
+                image.color = new Color(0.16f, 0.22f, 0.32f, 1f);
+            }
+            var button = go.GetComponent<Button>();
+            button.onClick.AddListener(onClick);
+            button.interactable = interactable;
+
+            var iconGo = new GameObject("Icon", typeof(RectTransform), typeof(Image));
+            iconGo.transform.SetParent(go.transform, false);
+            var iconRect = iconGo.GetComponent<RectTransform>();
+            iconRect.anchorMin = new Vector2(0.5f, 0.5f);
+            iconRect.anchorMax = new Vector2(0.5f, 0.5f);
+            iconRect.sizeDelta = new Vector2(66, 66);
+            iconRect.anchoredPosition = new Vector2(0, 12);
+            var iconImage = iconGo.GetComponent<Image>();
+            iconImage.raycastTarget = false;
+            var icon = SpriteLibrary.Card(card.id);
+            if (icon != null)
+            {
+                iconImage.sprite = icon;
+                iconImage.color = Color.white;
+            }
+
+            var cost = CreateText(card.cost.ToString(), 18, go.transform);
+            var costRect = cost.rectTransform;
+            costRect.anchorMin = new Vector2(0f, 1f);
+            costRect.anchorMax = new Vector2(0f, 1f);
+            costRect.pivot = new Vector2(0f, 1f);
+            costRect.anchoredPosition = new Vector2(6, -5);
+            costRect.sizeDelta = new Vector2(30, 26);
+            cost.raycastTarget = false;
+
+            var nameText = CreateText(upgraded ? "✦" + card.name : card.name, 13, go.transform);
+            var nameRect = nameText.rectTransform;
+            nameRect.anchorMin = new Vector2(0f, 0f);
+            nameRect.anchorMax = new Vector2(1f, 0f);
+            nameRect.pivot = new Vector2(0.5f, 0f);
+            nameRect.anchoredPosition = new Vector2(0, 6);
+            nameRect.sizeDelta = new Vector2(104, 22);
+            nameText.alignment = TextAnchor.MiddleCenter;
+            nameText.raycastTarget = false;
+            return button;
+        }
+
+        private void CreateHpBar(string name, Transform parent, string fillName, out Image fill)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+            go.transform.SetParent(parent, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(240, 24);
+            var track = go.GetComponent<Image>();
+            track.raycastTarget = false;
+            var trackSprite = SpriteLibrary.Ui("bar_track");
+            if (trackSprite != null)
+            {
+                track.sprite = trackSprite;
+                track.color = Color.white;
+            }
+            else
+            {
+                track.color = new Color(0.12f, 0.14f, 0.18f, 1f);
+            }
+            var fillGo = new GameObject("Fill", typeof(RectTransform), typeof(Image));
+            fillGo.transform.SetParent(go.transform, false);
+            var fillRect = fillGo.GetComponent<RectTransform>();
+            fillRect.anchorMin = new Vector2(0f, 0.5f);
+            fillRect.anchorMax = new Vector2(0f, 0.5f);
+            fillRect.pivot = new Vector2(0f, 0.5f);
+            fillRect.anchoredPosition = Vector2.zero;
+            fillRect.sizeDelta = new Vector2(232, 20);
+            fill = fillGo.GetComponent<Image>();
+            fill.raycastTarget = false;
+            var fillSprite = SpriteLibrary.Ui(fillName);
+            if (fillSprite != null)
+            {
+                fill.sprite = fillSprite;
+                fill.color = Color.white;
+            }
+            else
+            {
+                fill.color = new Color(0.35f, 0.68f, 0.35f, 1f);
+            }
+        }
+
+        private void SetBarFill(Image fill, float ratio)
+        {
+            if (fill == null) return;
+            fill.rectTransform.sizeDelta = new Vector2(232f * Mathf.Max(0f, ratio), 20f);
         }
 
         private void WireHover(Button button, CardData card, bool upgraded, string extra = "")
