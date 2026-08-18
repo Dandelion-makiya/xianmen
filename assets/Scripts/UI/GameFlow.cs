@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,7 +12,17 @@ namespace Xianmen
         private Canvas _canvas;
         private GameObject _menuRoot;
         private GameObject _mapRoot;
+        private GameObject _battleRoot;
         private Text _mapStatus;
+        private Text _enemyStatus;
+        private Text _playerStatus;
+        private Text _battleLog;
+        private Transform _handRoot;
+        private Button _endTurnButton;
+        private Button _battleContinueButton;
+        private readonly List<Button> _handButtons = new List<Button>();
+
+        private BattleState _battleState;
 
         private void Awake()
         {
@@ -27,6 +38,7 @@ namespace Xianmen
             BuildCanvas();
             BuildMenu();
             BuildMap();
+            BuildBattlePanel();
             ShowMenu();
         }
 
@@ -73,8 +85,36 @@ namespace Xianmen
             title.rectTransform.sizeDelta = new Vector2(700, 80);
             _mapStatus = CreateText("当前节点：1 / 20", 28, _mapRoot.transform);
             _mapStatus.rectTransform.sizeDelta = new Vector2(700, 60);
-            CreateButton("进入节点（待接入战斗）", _mapRoot.transform, OnEnterNodePressed);
+            CreateButton("进入当前节点", _mapRoot.transform, OnEnterNodePressed);
             CreateButton("返回主界面", _mapRoot.transform, ShowMenu);
+        }
+
+        private void BuildBattlePanel()
+        {
+            _battleRoot = CreateVerticalPanel("BattleRoot", _canvas.transform);
+            var title = CreateText("战斗", 48, _battleRoot.transform);
+            title.rectTransform.sizeDelta = new Vector2(500, 80);
+            _enemyStatus = CreateText("敌人", 28, _battleRoot.transform);
+            _enemyStatus.rectTransform.sizeDelta = new Vector2(700, 70);
+            _playerStatus = CreateText("玩家", 28, _battleRoot.transform);
+            _playerStatus.rectTransform.sizeDelta = new Vector2(700, 70);
+
+            var handGo = new GameObject("HandRoot", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            handGo.transform.SetParent(_battleRoot.transform, false);
+            _handRoot = handGo.transform;
+            var handRect = _handRoot.GetComponent<RectTransform>();
+            handRect.sizeDelta = new Vector2(1200, 80);
+            var handLayout = _handRoot.GetComponent<HorizontalLayoutGroup>();
+            handLayout.childAlignment = TextAnchor.MiddleCenter;
+            handLayout.childControlWidth = false;
+            handLayout.childControlHeight = false;
+            handLayout.spacing = 8;
+
+            _battleLog = CreateText("", 24, _battleRoot.transform);
+            _battleLog.rectTransform.sizeDelta = new Vector2(700, 50);
+            _endTurnButton = CreateButton("结束回合", _battleRoot.transform, OnEndTurnPressed);
+            _battleContinueButton = CreateButton("返回地图", _battleRoot.transform, OnBattleContinuePressed);
+            _battleContinueButton.gameObject.SetActive(false);
         }
 
         private GameObject CreateVerticalPanel(string name, Transform parent)
@@ -128,18 +168,32 @@ namespace Xianmen
 
         private void ShowMenu()
         {
+            HideAllPanels();
             if (_menuRoot != null) _menuRoot.SetActive(true);
-            if (_mapRoot != null) _mapRoot.SetActive(false);
         }
 
         private void ShowMap()
         {
-            if (_menuRoot != null) _menuRoot.SetActive(false);
+            HideAllPanels();
             if (_mapRoot != null) _mapRoot.SetActive(true);
             if (_mapStatus != null)
             {
                 _mapStatus.text = string.Format("当前节点：{0} / 20", GameState.CurrentNodeIndex + 1);
             }
+        }
+
+        private void ShowBattle()
+        {
+            HideAllPanels();
+            if (_battleRoot != null) _battleRoot.SetActive(true);
+            RenderBattle();
+        }
+
+        private void HideAllPanels()
+        {
+            if (_menuRoot != null) _menuRoot.SetActive(false);
+            if (_mapRoot != null) _mapRoot.SetActive(false);
+            if (_battleRoot != null) _battleRoot.SetActive(false);
         }
 
         private void OnStartPressed()
@@ -158,8 +212,126 @@ namespace Xianmen
 
         private void OnEnterNodePressed()
         {
-            // TODO: 按节点类型进入战斗 / 事件 / 打坐。
-            Debug.Log("节点进入逻辑待实现：" + (GameState.CurrentNode == null ? "null" : GameState.CurrentNode.type));
+            var node = GameState.CurrentNode;
+            if (node == null) return;
+
+            switch (node.type)
+            {
+                case "battle":
+                case "elite":
+                case "boss":
+                    StartBattle();
+                    break;
+                case "rest":
+                    var healRatio = GameState.Relics.Contains("lingquan") ? 0.5f : 0.3f;
+                    var heal = Mathf.CeilToInt(GameState.MaxHp * healRatio);
+                    GameState.CurrentHp = Mathf.Min(GameState.MaxHp, GameState.CurrentHp + heal);
+                    GameState.Save();
+                    GameState.AdvanceNode();
+                    ShowMap();
+                    break;
+                case "event":
+                    _mapStatus.text = "奇遇事件待接入";
+                    break;
+            }
+        }
+
+        private void StartBattle()
+        {
+            var node = GameState.CurrentNode;
+            if (node == null) return;
+            var enemyId = node.type == "boss" ? "mo_zun" : "ni_zhao_jing";
+            var enemy = DataLoader.GetEnemy(enemyId);
+            if (enemy == null)
+            {
+                Debug.LogError("Enemy data missing: " + enemyId);
+                return;
+            }
+            _battleState = new BattleState(GameState.Deck, enemy);
+            ShowBattle();
+        }
+
+        private void RenderBattle()
+        {
+            if (_battleState == null) return;
+            _enemyStatus.text = string.Format(
+                "{0}\nHP {1}/{2}  罡气 {3}",
+                _battleState.Enemy.Name,
+                Mathf.Max(0, _battleState.Enemy.CurrentHp),
+                _battleState.Enemy.MaxHp,
+                _battleState.Enemy.Block
+            );
+            _playerStatus.text = string.Format(
+                "掌门\nHP {0}/{1}  罡气 {2}  灵力 {3}",
+                Mathf.Max(0, _battleState.Player.CurrentHp),
+                _battleState.Player.MaxHp,
+                _battleState.Player.Block,
+                _battleState.Energy
+            );
+            RebuildHand();
+            _endTurnButton.interactable = _battleState.PlayerTurn && !_battleState.BattleOver;
+            _battleContinueButton.gameObject.SetActive(_battleState.BattleOver);
+            _battleLog.text = _battleState.BattleOver
+                ? (_battleState.PlayerWon ? "战斗胜利！" : "战斗失败...")
+                : "";
+        }
+
+        private void RebuildHand()
+        {
+            foreach (var button in _handButtons)
+            {
+                if (button != null) Destroy(button.gameObject);
+            }
+            _handButtons.Clear();
+            if (_battleState == null) return;
+
+            for (var i = 0; i < _battleState.Hand.Count; i++)
+            {
+                var card = DataLoader.GetCard(_battleState.Hand[i]);
+                var index = i;
+                var label = card != null ? string.Format("{0} ({1})", card.name, card.cost) : "?";
+                var button = CreateButton(label, _handRoot, () => OnCardPressed(index));
+                _handButtons.Add(button);
+            }
+        }
+
+        private void OnCardPressed(int handIndex)
+        {
+            if (_battleState == null) return;
+            var card = DataLoader.GetCard(_battleState.Hand[handIndex]);
+            if (card == null) return;
+            if (_battleState.PlayCard(card, handIndex))
+            {
+                RenderBattle();
+            }
+        }
+
+        private void OnEndTurnPressed()
+        {
+            if (_battleState == null) return;
+            _battleState.EndPlayerTurn();
+            RenderBattle();
+        }
+
+        private void OnBattleContinuePressed()
+        {
+            if (_battleState == null) return;
+            if (_battleState.PlayerWon)
+            {
+                if (GameState.CurrentNodeIndex >= GameState.MapNodes.Count - 1)
+                {
+                    _mapStatus.text = "通关结算待实现";
+                    ShowMenu();
+                    return;
+                }
+                GameState.AdvanceNode();
+                ShowMap();
+            }
+            else
+            {
+                GameState.StartNewRun();
+                ShowMenu();
+            }
         }
 
         private void OnQuitPressed()

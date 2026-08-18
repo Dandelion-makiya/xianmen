@@ -11,6 +11,16 @@ namespace Xianmen
         public static Dictionary<string, EventData> Events { get; private set; } = new Dictionary<string, EventData>();
         public static MapConfig MapConfig { get; private set; }
 
+        public static CardData GetCard(string id)
+        {
+            return Cards.TryGetValue(id, out var card) ? card : null;
+        }
+
+        public static EnemyData GetEnemy(string id)
+        {
+            return Enemies.TryGetValue(id, out var enemy) ? enemy : null;
+        }
+
         public static void LoadAll()
         {
             LoadCards();
