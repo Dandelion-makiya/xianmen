@@ -42,16 +42,26 @@ namespace Xianmen
             return Get("frames/frame_" + rarity);
         }
 
-        private static Sprite Get(string path)
+        public static Sprite Background(string name)
+        {
+            return Get("backgrounds/bg_" + name);
+        }
+
+        public static Sprite Ui(string name, int border = 0)
+        {
+            return Get("ui/" + name, border);
+        }
+
+        private static Sprite Get(string path, int border = 0)
         {
             if (Cache.TryGetValue(path, out var cached)) return cached;
             var texture = Resources.Load<Texture2D>("Art/" + path);
             if (texture == null) return null;
-            var sprite = Sprite.Create(
-                texture,
-                new Rect(0, 0, texture.width, texture.height),
-                new Vector2(0.5f, 0.5f)
-            );
+            var rect = new Rect(0, 0, texture.width, texture.height);
+            var pivot = new Vector2(0.5f, 0.5f);
+            var sprite = border > 0
+                ? Sprite.Create(texture, rect, pivot, 100f, 0, SpriteMeshType.FullRect, new Vector4(border, border, border, border))
+                : Sprite.Create(texture, rect, pivot);
             Cache[path] = sprite;
             return sprite;
         }

@@ -129,6 +129,7 @@ namespace Xianmen
         private void BuildMenu()
         {
             _menuRoot = CreateVerticalPanel("MenuRoot", _canvas.transform);
+            SetPanelBackground(_menuRoot, SpriteLibrary.Background("menu"));
             var title = CreateText("仙门问道", 72, _menuRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 120);
             var subtitle = CreateText("一人一宗，对抗漫天魔气 · Demo", 22, _menuRoot.transform);
@@ -141,6 +142,7 @@ namespace Xianmen
         private void BuildMap()
         {
             _mapRoot = CreateVerticalPanel("MapRoot", _canvas.transform);
+            SetPanelBackground(_mapRoot, SpriteLibrary.Background("map"));
             var title = CreateText("仙门地图", 40, _mapRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(700, 70);
 
@@ -180,6 +182,7 @@ namespace Xianmen
         private void BuildBattlePanel()
         {
             _battleRoot = CreateVerticalPanel("BattleRoot", _canvas.transform, 1320, 920);
+            SetPanelBackground(_battleRoot, SpriteLibrary.Background("battle"));
             _battleTitle = CreateText("战斗", 48, _battleRoot.transform);
             _battleTitle.rectTransform.sizeDelta = new Vector2(500, 80);
             var enemyGo = new GameObject("EnemyImage", typeof(RectTransform), typeof(Image));
@@ -215,6 +218,7 @@ namespace Xianmen
         private void BuildRewardPanel()
         {
             _rewardRoot = CreateVerticalPanel("RewardRoot", _canvas.transform, 1000, 560);
+            SetPanelBackground(_rewardRoot, SpriteLibrary.Ui("panel_frame", 8));
             var title = CreateText("战斗奖励", 40, _rewardRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 70);
             _rewardInfo = CreateText("", 26, _rewardRoot.transform);
@@ -238,6 +242,7 @@ namespace Xianmen
         private void BuildHubPanel()
         {
             _hubRoot = CreateVerticalPanel("HubRoot", _canvas.transform);
+            SetPanelBackground(_hubRoot, SpriteLibrary.Background("hub"));
             var title = CreateText("宗门", 48, _hubRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 80);
             _hubStatus = CreateText("", 26, _hubRoot.transform);
@@ -254,6 +259,7 @@ namespace Xianmen
         private void BuildShopPanel()
         {
             _shopRoot = CreateVerticalPanel("ShopRoot", _canvas.transform, 1000, 560);
+            SetPanelBackground(_shopRoot, SpriteLibrary.Ui("panel_frame", 8));
             var title = CreateText("坊市", 40, _shopRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 70);
             _shopInfo = CreateText("当前货架", 24, _shopRoot.transform);
@@ -275,6 +281,7 @@ namespace Xianmen
         private void BuildUpgradePanel()
         {
             _upgradeRoot = CreateVerticalPanel("UpgradeRoot", _canvas.transform, 1000, 640);
+            SetPanelBackground(_upgradeRoot, SpriteLibrary.Ui("panel_frame", 8));
             var title = CreateText("祭炼", 40, _upgradeRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 70);
             _upgradeInfo = CreateText("选择要升级的卡牌（凡阶 10灵石+2药材 / 灵阶 15+3 / 仙阶 20+5）", 22, _upgradeRoot.transform);
@@ -294,6 +301,7 @@ namespace Xianmen
         private void BuildEventPanel()
         {
             _eventRoot = CreateVerticalPanel("EventRoot", _canvas.transform, 900, 620);
+            SetPanelBackground(_eventRoot, SpriteLibrary.Ui("panel_frame", 8));
             _eventTitle = CreateText("奇遇", 36, _eventRoot.transform);
             _eventTitle.rectTransform.sizeDelta = new Vector2(600, 60);
             _eventText = CreateText("", 24, _eventRoot.transform);
@@ -310,6 +318,7 @@ namespace Xianmen
         private void BuildEndPanels()
         {
             _victoryRoot = CreateVerticalPanel("VictoryRoot", _canvas.transform, 900, 560);
+            SetPanelBackground(_victoryRoot, SpriteLibrary.Ui("panel_frame", 8));
             var vTitle = CreateText("通关！", 48, _victoryRoot.transform);
             vTitle.rectTransform.sizeDelta = new Vector2(500, 80);
             _victoryText = CreateText("", 24, _victoryRoot.transform);
@@ -317,6 +326,7 @@ namespace Xianmen
             CreateButton("返回主界面", _victoryRoot.transform, OnVictoryBackPressed);
 
             _defeatRoot = CreateVerticalPanel("DefeatRoot", _canvas.transform, 900, 560);
+            SetPanelBackground(_defeatRoot, SpriteLibrary.Ui("panel_frame", 8));
             var dTitle = CreateText("道途断绝", 48, _defeatRoot.transform);
             dTitle.rectTransform.sizeDelta = new Vector2(500, 80);
             _defeatText = CreateText("", 24, _defeatRoot.transform);
@@ -329,6 +339,7 @@ namespace Xianmen
         private void BuildDeckPanel()
         {
             _deckRoot = CreateVerticalPanel("DeckRoot", _canvas.transform, 700, 640);
+            SetPanelBackground(_deckRoot, SpriteLibrary.Ui("panel_frame", 8));
             var title = CreateText("牌组", 40, _deckRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 70);
             var listGo = new GameObject("DeckCardRoot", typeof(RectTransform), typeof(VerticalLayoutGroup));
@@ -355,6 +366,7 @@ namespace Xianmen
             rect.sizeDelta = new Vector2(380, 320);
             var image = _cardDetailRoot.GetComponent<Image>();
             image.color = new Color(0.08f, 0.1f, 0.14f, 0.95f);
+            SetPanelBackground(_cardDetailRoot, SpriteLibrary.Ui("panel_frame", 8));
             var layout = _cardDetailRoot.GetComponent<VerticalLayoutGroup>();
             layout.childAlignment = TextAnchor.UpperCenter;
             layout.childControlWidth = true;
@@ -370,18 +382,33 @@ namespace Xianmen
 
         private GameObject CreateVerticalPanel(string name, Transform parent, float width = 520, float height = 480)
         {
-            var go = new GameObject(name, typeof(RectTransform), typeof(VerticalLayoutGroup));
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(VerticalLayoutGroup));
             go.transform.SetParent(parent, false);
             var rect = go.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.sizeDelta = new Vector2(width, height);
+            var bg = go.GetComponent<Image>();
+            bg.color = new Color(0.1f, 0.12f, 0.16f, 0.96f);
             var layout = go.GetComponent<VerticalLayoutGroup>();
             layout.childAlignment = TextAnchor.MiddleCenter;
             layout.childControlWidth = true;
             layout.childControlHeight = false;
             layout.spacing = 16;
             return go;
+        }
+
+        private void SetPanelBackground(GameObject panel, Sprite sprite)
+        {
+            if (panel == null || sprite == null) return;
+            var image = panel.GetComponent<Image>();
+            if (image == null) return;
+            image.sprite = sprite;
+            image.color = Color.white;
+            if (sprite.border != Vector4.zero)
+            {
+                image.type = Image.Type.Sliced;
+            }
         }
 
         private Text CreateText(string content, int size, Transform parent)
@@ -405,9 +432,24 @@ namespace Xianmen
             var rect = go.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(260, 58);
             var image = go.GetComponent<Image>();
-            image.color = new Color(0.18f, 0.28f, 0.38f, 1f);
             var button = go.GetComponent<Button>();
             button.onClick.AddListener(onClick);
+            var normalSprite = SpriteLibrary.Ui("btn_normal");
+            if (normalSprite != null)
+            {
+                image.sprite = normalSprite;
+                image.color = Color.white;
+                button.transition = Selectable.Transition.SpriteSwap;
+                var state = new SpriteState();
+                state.highlightedSprite = SpriteLibrary.Ui("btn_hover");
+                state.pressedSprite = SpriteLibrary.Ui("btn_pressed");
+                state.disabledSprite = SpriteLibrary.Ui("btn_disabled");
+                button.spriteState = state;
+            }
+            else
+            {
+                image.color = new Color(0.18f, 0.28f, 0.38f, 1f);
+            }
             var text = CreateText(label, 28, go.transform);
             var textRect = text.rectTransform;
             textRect.anchorMin = Vector2.zero;
