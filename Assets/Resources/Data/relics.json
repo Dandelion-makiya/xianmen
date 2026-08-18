@@ -1,0 +1,25 @@
+{
+  "relics": [
+    {
+      "id": "zongmen_zhangce",
+      "name": "宗门账册",
+      "desc": "战斗胜利额外 +2 灵石",
+      "effect": { "type": "battle_reward", "resource": "spirit_stone", "value": 2 },
+      "flavor": "记录宗门收支的账册，精打细算方能长久。"
+    },
+    {
+      "id": "lingquan",
+      "name": "灵泉",
+      "desc": "打坐回复提升至最大 HP 的 50%",
+      "effect": { "type": "rest_heal_multiplier", "value": 0.5 },
+      "flavor": "山间灵泉，打坐效果倍增。"
+    },
+    {
+      "id": "tianji_pan",
+      "name": "天机盘",
+      "desc": "每回合第一张攻击卡伤害总额 +2",
+      "effect": { "type": "first_attack_bonus", "value": 2 },
+      "flavor": "推演天机，首击必中。"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "enemies": [
+    {
+      "id": "ni_zhao_jing",
+      "name": "泥沼精",
+      "type": "normal",
+      "hp": 25,
+      "intents": [
+        { "action": "attack", "value": 5 },
+        { "action": "block", "value": 3 },
+        { "action": "attack", "value": 6 }
+      ],
+      "mechanic": "教学怪",
+      "lore": "被魔气浸染的沼泽生灵，是最弱的魔物，常被用来试炼新弟子。"
+    },
+    {
+      "id": "mo_zun",
+      "name": "魔尊",
+      "type": "boss",
+      "hp": 220,
+      "intents": [
+        { "action": "attack", "value": 16 },
+        { "action": "block", "value": 12 },
+        { "action": "heavy_attack", "value": 24 }
+      ],
+      "mechanic": "单阶段，不套用节点成长",
+      "lore": "百年前破封而出的魔尊「噬渊」，玄天大陆的浩劫之源。"
+    }
+  ]
+}
