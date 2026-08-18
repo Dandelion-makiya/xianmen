@@ -138,7 +138,7 @@ namespace Xianmen
             var go = new GameObject("Text", typeof(RectTransform), typeof(Text));
             go.transform.SetParent(parent, false);
             var text = go.GetComponent<Text>();
-            text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
             text.text = content;
             text.fontSize = size;
             text.alignment = TextAnchor.MiddleCenter;
