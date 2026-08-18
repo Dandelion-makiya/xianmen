@@ -99,9 +99,11 @@ namespace Xianmen
             if (handIndex < 0 || handIndex >= Hand.Count) return false;
             if (card.cost > Energy) return false;
 
+            var entry = Hand[handIndex];
+            var upgraded = GameState.IsUpgraded(entry);
             Energy -= card.cost;
             Hand.RemoveAt(handIndex);
-            DiscardPile.Add(card.id);
+            DiscardPile.Add(entry);
 
             var attackPlayedBefore = AttackPlayedThisTurn;
             var damageBonus = 0;
@@ -118,7 +120,7 @@ namespace Xianmen
                 AttackPlayedThisTurn = true;
             }
 
-            ExecuteCardEffects(card.effects, card.target, damageBonus, attackPlayedBefore);
+            ExecuteCardEffects(upgraded ? card.upgrade_effects : card.effects, card.target, damageBonus, attackPlayedBefore);
             CheckBattleEnd();
             return true;
         }

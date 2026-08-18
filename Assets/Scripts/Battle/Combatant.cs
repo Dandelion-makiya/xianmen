@@ -37,6 +37,16 @@ namespace Xianmen
             return _buffs.TryGetValue(buff, out var value) ? value : 0;
         }
 
+        public List<KeyValuePair<string, int>> GetBuffs()
+        {
+            var list = new List<KeyValuePair<string, int>>();
+            foreach (var kv in _buffs)
+            {
+                list.Add(kv);
+            }
+            return list;
+        }
+
         public void AddBuff(string buff, int stacks)
         {
             if (stacks <= 0) return;
