@@ -171,7 +171,7 @@ namespace Xianmen
 
         private void BuildBattlePanel()
         {
-            _battleRoot = CreateVerticalPanel("BattleRoot", _canvas.transform, 1320, 660);
+            _battleRoot = CreateVerticalPanel("BattleRoot", _canvas.transform, 1320, 920);
             var title = CreateText("战斗", 48, _battleRoot.transform);
             title.rectTransform.sizeDelta = new Vector2(500, 80);
             var enemyGo = new GameObject("EnemyImage", typeof(RectTransform), typeof(Image));
@@ -196,7 +196,9 @@ namespace Xianmen
             handLayout.spacing = 8;
 
             _battleLog = CreateText("", 24, _battleRoot.transform);
-            _battleLog.rectTransform.sizeDelta = new Vector2(700, 50);
+            _battleLog.rectTransform.sizeDelta = new Vector2(1100, 120);
+            _battleLog.alignment = TextAnchor.LowerLeft;
+            _battleLog.fontSize = 20;
             _endTurnButton = CreateButton("结束回合", _battleRoot.transform, OnEndTurnPressed);
             _battleContinueButton = CreateButton("继续", _battleRoot.transform, OnBattleContinuePressed);
             _battleContinueButton.gameObject.SetActive(false);
@@ -574,9 +576,15 @@ namespace Xianmen
             RebuildHand();
             _endTurnButton.interactable = _battleState.PlayerTurn && !_battleState.BattleOver;
             _battleContinueButton.gameObject.SetActive(_battleState.BattleOver);
+            var logLines = new List<string>();
+            var start = Mathf.Max(0, _battleState.Log.Count - 5);
+            for (var i = start; i < _battleState.Log.Count; i++)
+            {
+                logLines.Add(_battleState.Log[i]);
+            }
             _battleLog.text = _battleState.BattleOver
-                ? (_battleState.PlayerWon ? "战斗胜利！" : "战斗失败...")
-                : "";
+                ? (_battleState.PlayerWon ? "战斗胜利！\n" : "战斗失败...\n") + string.Join("\n", logLines)
+                : string.Join("\n", logLines);
         }
 
         private void RebuildHand()
@@ -600,6 +608,7 @@ namespace Xianmen
                     : "?";
                 var button = CreateButton(label, _handRoot, () => OnCardPressed(index));
                 button.GetComponent<RectTransform>().sizeDelta = new Vector2(300, 86);
+                button.interactable = _battleState.PlayerTurn && !_battleState.BattleOver && card.cost <= _battleState.Energy;
                 var text = button.GetComponentInChildren<Text>();
                 text.fontSize = 17;
                 text.alignment = TextAnchor.MiddleCenter;

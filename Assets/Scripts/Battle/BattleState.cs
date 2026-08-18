@@ -21,8 +21,10 @@ namespace Xianmen
         public bool PlayerWon;
         public bool FirstAttackPlayedThisTurn;
         public bool AttackPlayedThisTurn;
+        public readonly List<string> Log = new List<string>();
 
         private readonly System.Random _rng = new System.Random();
+        private bool _startRelicsApplied;
 
         public BattleState(List<string> deck, EnemyData enemyData)
         {
@@ -87,10 +89,34 @@ namespace Xianmen
             AttackPlayedThisTurn = false;
             FirstAttackPlayedThisTurn = false;
             Player.ClearBlock();
+            var hpBefore = Player.CurrentHp;
             Player.TickTurnStart();
+            if (Player.CurrentHp < hpBefore)
+            {
+                AddLog(string.Format("毒煞发作，掌门受到 {0} 伤害", hpBefore - Player.CurrentHp));
+            }
             if (CheckBattleEnd()) return;
             Energy = StartEnergy;
+            if (!_startRelicsApplied)
+            {
+                _startRelicsApplied = true;
+                ApplyStartRelics();
+            }
             DrawCards(DrawPerTurn);
+        }
+
+        private void ApplyStartRelics()
+        {
+            if (GameState.Relics.Contains("shoushan_dazhen"))
+            {
+                Player.Block += 3;
+                AddLog("守山大阵运转，获得 3 点罡气");
+            }
+            if (GameState.Relics.Contains("yanwu_chang"))
+            {
+                Energy += 1;
+                AddLog("演武场士气高昂，额外获得 1 点灵力");
+            }
         }
 
         public bool PlayCard(CardData card, int handIndex)
@@ -146,7 +172,12 @@ namespace Xianmen
 
         private void ExecuteEnemyTurn()
         {
+            var hpBefore = Enemy.CurrentHp;
             Enemy.TickTurnStart();
+            if (Enemy.CurrentHp < hpBefore)
+            {
+                AddLog(string.Format("毒煞发作，{0} 受到 {1} 伤害", Enemy.Name, hpBefore - Enemy.CurrentHp));
+            }
             if (CheckBattleEnd()) return;
 
             var intent = Enemy.CurrentIntent;
@@ -170,6 +201,7 @@ namespace Xianmen
                 case "attack":
                 case "heavy_attack":
                     DealDamage(Enemy, Player, value);
+                    ApplyEnemyAttackMechanic();
                     break;
                 case "multi_attack":
                     var hitTimes = Mathf.Max(1, times);
@@ -177,22 +209,35 @@ namespace Xianmen
                     {
                         DealDamage(Enemy, Player, value);
                     }
+                    ApplyEnemyAttackMechanic();
                     break;
                 case "block":
                     Enemy.Block += value;
+                    AddLog(string.Format("{0} 防御，获得 {1} 点罡气", Enemy.Name, value));
                     break;
                 case "buff":
                     Enemy.AddBuff(
                         string.IsNullOrEmpty(buff) ? "strength" : buff,
                         stacks > 0 ? stacks : 1
                     );
+                    AddLog(string.Format("{0} 强化自身", Enemy.Name));
                     break;
                 case "debuff":
                     Player.AddBuff(
                         string.IsNullOrEmpty(buff) ? "weak" : buff,
                         stacks > 0 ? stacks : 1
                     );
+                    AddLog(string.Format("{0} 对掌门施加负面状态", Enemy.Name));
                     break;
+            }
+        }
+
+        private void ApplyEnemyAttackMechanic()
+        {
+            if (Enemy.Data != null && Enemy.Data.id == "shi_kui")
+            {
+                Enemy.AddBuff("strength", 1);
+                AddLog("尸傀越战越勇，剑意 +1");
             }
         }
 
@@ -218,15 +263,18 @@ namespace Xianmen
                         break;
                     case "block":
                         Player.Block += value + Player.GetBuff("dexterity");
+                        AddLog(string.Format("获得 {0} 点罡气", value + Player.GetBuff("dexterity")));
                         break;
                     case "draw":
                         DrawCards(value);
                         break;
                     case "energy":
                         Energy += value;
+                        AddLog(string.Format("获得 {0} 点灵力", value));
                         break;
                     case "heal":
                         Player.CurrentHp = Mathf.Min(Player.MaxHp, Player.CurrentHp + value);
+                        AddLog(string.Format("回复 {0} 点生命", value));
                         break;
                     case "discard":
                         DiscardCards(value);
@@ -235,11 +283,13 @@ namespace Xianmen
                         var target = targetType == "self" || targetType == "player" ? Player : Enemy;
                         var stacks = conditionalMet && effect.value != 0 ? value : effect.stacks;
                         target.AddBuff(effect.buff, stacks);
+                        AddLog(string.Format("对 {0} 施加 {1} 层{2}", target.Name, stacks, BuffLabel(effect.buff)));
                         break;
                     case "cleanse":
                         Player.RemoveBuff("poison");
                         Player.RemoveBuff("weak");
                         Player.RemoveBuff("vulnerable");
+                        AddLog("清除全部负面状态");
                         break;
                 }
             }
@@ -268,12 +318,41 @@ namespace Xianmen
             var absorbed = Mathf.Min(target.Block, damage);
             target.Block -= absorbed;
             target.CurrentHp -= damage - absorbed;
+            AddLog(string.Format(
+                "{0} 对 {1} 造成 {2} 伤害（罡气抵消 {3}）",
+                source.Name,
+                target.Name,
+                damage - absorbed,
+                absorbed
+            ));
 
             var thorns = target.GetBuff("thorns");
             if (thorns > 0)
             {
                 source.CurrentHp -= thorns;
+                AddLog(string.Format("{0} 受反噬 {1} 伤害", source.Name, thorns));
             }
+        }
+
+        private static string BuffLabel(string buff)
+        {
+            switch (buff)
+            {
+                case "poison": return "毒煞";
+                case "weak": return "气滞";
+                case "vulnerable": return "破绽";
+                case "strength": return "剑意";
+                case "dexterity": return "身法";
+                case "thorns": return "反噬";
+                case "regen": return "生生不息";
+                default: return buff;
+            }
+        }
+
+        private void AddLog(string message)
+        {
+            Log.Add(message);
+            if (Log.Count > 40) Log.RemoveAt(0);
         }
 
         private void DrawCards(int count)
